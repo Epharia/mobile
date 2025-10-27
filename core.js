@@ -14,7 +14,7 @@ window.addEventListener('load', function () {
             this.width = width;
             this.height = height;
             State.init();
-            Handler.init(this);
+            Handler.init(this, canvas);
 
             Handler.isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 2 && !/Windows/i.test(navigator.userAgent));
         }

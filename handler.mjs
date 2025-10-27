@@ -6,6 +6,8 @@ export class Handler {
     /** @type {Number} */
     static delta;
     static game;
+    /** @type {HTMLElement} */
+    static canvas;
 
     /** @type {Boolean} */
     static isMobile;
@@ -19,8 +21,9 @@ export class Handler {
     /** @type {World} */
     static world;
 
-    static init(game) {
+    static init(game, canvas) {
         Handler.game = game;
+        Handler.canvas = canvas;
         Handler.input = new InputHandler();
         Handler.touch = new TouchHandler();
         Handler.world = new World();

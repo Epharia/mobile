@@ -19,10 +19,10 @@ export class World {
         this.entities.add(this.player);
 
         //TEMP(Delete later)
-        // for (let i = 0; i < 10; ++i) {
-        //     let pos = Vector2D.random(this.width / 2, this.height).add(Vector2D.right.multiply(this.width / 2));
-        //     this.entities.add(new Enemy(pos.x, pos.y, 200 + Math.random() * 100));
-        // }
+        for (let i = 0; i < 10; ++i) {
+            let pos = Vector2D.random(this.width / 2, this.height).add(Vector2D.right.multiply(this.width / 2));
+            this.entities.add(new Enemy(pos.x, pos.y, 200 + Math.random() * 100));
+        }
     }
 
     tick() {

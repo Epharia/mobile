@@ -29,9 +29,10 @@ export class Player extends Sprite {
     }
 
     move() {
-        let input = Vector2D.zero;
+        let input = Handler.touch.move;;
 
-        if (!Handler.isMobile) {
+        let keyboard = false;
+        if (input.equals(Vector2D.zero)) {
             //Horizontal Input
             let left = Handler.input.keys.left.held,
                 right = Handler.input.keys.right.held;
@@ -50,27 +51,28 @@ export class Player extends Sprite {
             } else if (!down && up) {
                 input.add(Vector2D.up);
             }
-        } else {
-            input = Handler.touch.move;
+
+            if (left || up || down || right) keyboard = true;
         }
 
-        //Friction with delta
+        //Friction
         if (this.velocity.magnitude2 > (this.friction * this.friction) * (Handler.delta * Handler.delta)) {
             this.velocity.addScaled(this.velocity.copy.negate().normalize(), this.friction * Handler.delta);
         } else {
             this.velocity = Vector2D.zero;
         }
 
-        if (!Handler.isMobile) {
+        //TODO add mouse interaction
+        if (keyboard) {
             if (!this.velocity.equals(Vector2D.zero)) {
                 this.orientation = this.velocity.copy;
                 this.orientation.normalize();
             }
-        } else {
-            let aim = Handler.touch.aim;
-            if (!aim.equals(Vector2D.zero)) {
-                this.orientation = aim;
-            }
+        }
+
+        let aim = Handler.touch.aim;
+        if (!aim.equals(Vector2D.zero)) {
+            this.orientation = aim;
         }
 
         this.velocity.x += input.x * this.acceleration * Handler.delta;

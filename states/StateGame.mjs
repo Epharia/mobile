@@ -1,3 +1,4 @@
+import { Joystick } from "../gfx/ui/joystick.mjs";
 import { Handler } from "../handler.mjs";
 import { State } from "./State.mjs";
 
@@ -12,5 +13,19 @@ export class StateGame {
 
     render(ctx) {
         Handler.world.render(ctx);
+        let move = Handler.touch.moveTouch;
+        let aim = Handler.touch.aimTouch;
+
+        if (move) {
+            let joystick = new Joystick(move.start);
+            joystick.adjust(move.generateDirection());
+            joystick.render(ctx);
+        }
+
+        if (aim) {
+            let joystick = new Joystick(aim.start);
+            joystick.adjust(aim.generateDirection());
+            joystick.render(ctx);
+        }
     }
 }

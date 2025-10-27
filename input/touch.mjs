@@ -1,3 +1,4 @@
+import { Handler } from "../handler.mjs";
 import { Vector2D } from "../util/vector2D.mjs";
 
 export class TouchHandler {
@@ -44,6 +45,17 @@ export class TouchHandler {
         return Vector2D.zero;
     }
 
+    get moveTouch() {
+        if (this.touches.length !== 0) {
+            for (let t of this.touches) {
+                if (t.start.x < window.innerWidth / 2) {
+                    return t;
+                }
+            }
+        }
+        return;
+    }
+
     get aim() {
         if (this.touches.length !== 0) {
             for (let t of this.touches) {
@@ -54,25 +66,45 @@ export class TouchHandler {
         }
         return Vector2D.zero;
     }
+
+    get aimTouch() {
+        if (this.touches.length !== 0) {
+            for (let t of this.touches) {
+                if (t.start.x > window.innerWidth / 2) {
+                    return t;
+                }
+            }
+        }
+        return;
+    }
 }
 
 class Touch {
     constructor(touch) {
         this.touch = touch;
-        this.start = new Vector2D(touch.pageX, touch.pageY);
+        this.start = new Vector2D(touch.clientX, touch.clientY);
         this.now = this.start;
     }
 
     update(touch) {
         this.touch = touch
-        this.now = new Vector2D(touch.pageX, touch.pageY);
+        this.now = new Vector2D(touch.clientX, touch.clientY);
     }
 
-    generateInput(deadzone = 25) {
+    generateInput(deadzone = 2) {
         let delta = this.now.copy.sub(this.start);
 
         if (delta.magnitude2 > deadzone * deadzone) {
             return delta.normalize();
+        }
+        return Vector2D.zero;
+    }
+
+    generateDirection(maxOffset = 16, deadzone = 0) {
+        let delta = this.now.copy.sub(this.start);
+
+        if (delta.magnitude2 > deadzone * deadzone) {
+            return delta.magnitude2 > maxOffset * maxOffset ? delta.normalize().multiply(maxOffset) : delta;
         }
         return Vector2D.zero;
     }
