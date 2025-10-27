@@ -4,25 +4,28 @@ export class TouchHandler {
     constructor() {
         this.touches = [];
         window.addEventListener('touchstart', e => {
+            e.preventDefault();
             for (let touch of e.changedTouches) {
                 this.touches.push(new Touch(touch));
             }
-        });
+        }, { passive: false });
 
         window.addEventListener('touchmove', e => {
+            e.preventDefault();
             for (let touch of e.changedTouches) {
                 let t = this.touches.filter(t => t.touch.identifier === touch.identifier)
                 if (t.length !== 0) {
                     t.forEach(e => e.update(touch));
                 }
             }
-        });
+        }, { passive: false });
 
         window.addEventListener('touchend', e => {
+            e.preventDefault();
             for (let touch of e.changedTouches) {
                 this.touches = this.touches.filter(t => t.touch.identifier !== touch.identifier);
             }
-        });
+        }, { passive: false });
 
         //Prevent "right click" event
         window.addEventListener('contextmenu', e => {
