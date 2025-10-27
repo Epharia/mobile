@@ -17,12 +17,12 @@ export class StateDeath {
     render(ctx) {
         ctx.save();
         ctx.fillStyle = 'white';
-        ctx.font = "16em Arial";
+        ctx.font = "20px Arial";
         ctx.textAlign = "center";
         ctx.shadowColor = 'rgba(255, 0, 0, 0.6)';
         ctx.shadowBlur = 16;
-        ctx.fillText('You Died!', canvas.width / 2, canvas.height / 2 - 100);
-        ctx.fillText(`Respawn in ${Math.ceil(StateDeath.timer)}`, canvas.width / 2, canvas.height / 2 + 200);
+        ctx.fillText('You Died!', canvas.width / 2, canvas.height / 2 - 20);
+        ctx.fillText(`Respawn in ${Math.ceil(StateDeath.timer)}`, canvas.width / 2, canvas.height / 2 + 20);
         ctx.restore();
     }
 }

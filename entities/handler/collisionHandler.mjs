@@ -71,7 +71,7 @@ class Entry {
 
         this.s = sprite;
         let r = sprite.radius;
-        this.aabb = new AABB(new Vector2D(-r, -r), new Vector2D(r, r)); //TODO generate AABB from Circle
+        this.aabb = new AABB(new Vector2D(-r, -r), new Vector2D(r, r)).at(this.s.pos); //TODO generate AABB from Circle
 
         this.checked = [];
     }

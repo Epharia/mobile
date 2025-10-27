@@ -1,13 +1,12 @@
 import { Handler } from './handler.mjs';
-import { Conf } from './config.mjs';
 import { State } from './states/State.mjs';
 
 window.addEventListener('load', function () {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
 
-    canvas.width = Conf.WIDTH;
-    canvas.height = Conf.HEIGHT;
+    canvas.width = this.window.innerWidth;
+    canvas.height = this.window.innerHeight;
 
     class Game {
         constructor(width, height) {
@@ -50,10 +49,10 @@ window.addEventListener('load', function () {
     this.requestAnimationFrame(loop);
 });
 
-//TODO
-// function resize() {
-//     canvas.width = window.innerWidth;
-//     canvas.height = window.innerHeight;
-// }
-// resize();
-// window.addEventListener('resize', resize);
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    Handler.world.calculateScale();
+}
+window.addEventListener('resize', resize);
+window.addEventListener('orientationchange', resize);
