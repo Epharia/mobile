@@ -8,10 +8,17 @@ import { Handler } from "../handler.mjs";
 const width = 2000;
 const height = 1000;
 
+const SpawnDelay = 20;
+
 export class World {
     constructor() {
         this.width = width;
         this.height = height;
+
+        this.score = 0;
+        this.wave = 0;
+
+        this.spawnTimer = 3
 
         this.calculateScale();
 
@@ -21,19 +28,28 @@ export class World {
 
     init() {
         this.player = new Player();
-
         this.entities.add(this.player);
-
-        //TEMP(Delete later)
-        for (let i = 0; i < 10; ++i) {
-            let pos = Vector2D.random(this.width / 2, this.height).add(Vector2D.right.multiply(this.width / 2));
-            this.entities.add(new Enemy(pos.x, pos.y, 200 + Math.random() * 100));
-        }
     }
 
     tick() {
+        if (this.spawnTimer > 0) {
+            this.spawnTimer -= Handler.delta;
+        } else if (this.entities.list.length < 200) {
+            this.spawnEnemies(Math.ceil(8 + 4.2 * ++this.wave))
+            this.spawnTimer = SpawnDelay;
+        }
+
         this.entities.tick();
         this.collisionHandler.process(this.entities.list);
+    }
+
+    spawnEnemies(n) {
+        for (let i = 0; i < n; ++i) {
+            let right = this.player.pos.x < this.width / 2;
+            let pos = Vector2D.random(this.width / 2 - 100, this.height);
+            if (right) pos.add(Vector2D.right.multiply(this.width / 2 + 100))
+            this.entities.add(new Enemy(pos.x, pos.y, 200 + Math.random() * 100));
+        }
     }
 
     /**

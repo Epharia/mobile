@@ -50,6 +50,6 @@ export class State {
 
         ctx.fillStyle = 'white';
         ctx.font = "20px Arial";
-        ctx.fillText(State.fps, 10, 25);
+        ctx.fillText(State.fps, Handler.canvas.width - 35, 25);
     }
 }

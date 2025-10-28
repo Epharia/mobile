@@ -2,8 +2,12 @@ import { fillCircle, fillTriangle } from "../../../gfx/gfxLib.mjs";
 import { Handler } from "../../../handler.mjs";
 import { State } from "../../../states/State.mjs";
 import { Vector2D } from "../../../util/vector2D.mjs";
+import { EntityProjectile } from "../../entitiyProjectile.mjs";
 import { Enemy } from "../enemy.mjs";
 import { Sprite } from "../sprite.mjs";
+
+const iFrames = 0.25;
+const attackDelay = .7;
 
 export class Player extends Sprite {
     constructor() {
@@ -15,17 +19,31 @@ export class Player extends Sprite {
         this.acceleration = 7500 + 5000;
         this.friction = 5000;
 
-        this.iFrames = 0;
+        this.iFramesTimer = 0;
+        this.attackDelayTimer = this.attackDelay;
 
         this.orientation = Vector2D.right;
     }
 
     tick() {
         this.color = 'black';
-        if (this.iFrames > 0) --this.iFrames;
+        if (this.iFramesTimer > 0) this.iFramesTimer -= Handler.delta;
+        else this.iFramesTimer = 0;
         this.move();
         super.normalizeVelocity();
         super.updatePosition();
+        this.attack();
+    }
+
+    attack() {
+        if (this.attackDelayTimer > 0) {
+            this.attackDelayTimer -= Handler.delta;
+            return;
+        }
+        let posWeapon = this.pos.copy.addScaled(this.orientation, this.radius + 16);
+        let projectile = new EntityProjectile(this, this.orientation, this.speed * 2, posWeapon.x, posWeapon.y);
+        Handler.world.entities.add(projectile);
+        this.attackDelayTimer = attackDelay;
     }
 
     move() {
@@ -84,7 +102,8 @@ export class Player extends Sprite {
      */
     render(ctx) {
         super.render(ctx);
-        fillCircle(ctx, this.pos.x, this.pos.y);
+        let fillStyle = this.iFramesTimer > iFrames / 2 ? 'rgba(255, 50, 50, 0.8)' : 'white';
+        fillCircle(ctx, this.pos.x, this.pos.y, this.radius, fillStyle);
         fillTriangle(ctx,
             this.pos.x + this.orientation.x * (this.radius + 16), // X Position around Circle
             this.pos.y + this.orientation.y * (this.radius + 16), // Y Position around Circle
@@ -93,11 +112,10 @@ export class Player extends Sprite {
 
     onCollision(other) {
         if (other instanceof Enemy) {
-            if (this.iFrames) return;
+            if (this.iFramesTimer) return;
             this.hp -= other.damage;
             if (this.hp <= 0) State.requestState(State.death);
-            this.iFrames = 10;
-            console.log(this.hp);
+            this.iFramesTimer = iFrames;
         }
     }
 }

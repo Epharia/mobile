@@ -27,5 +27,13 @@ export class StateGame {
             joystick.adjust(aim.generateDirection());
             joystick.render(ctx);
         }
+
+        //HP
+        ctx.fillStyle = 'red';
+        ctx.font = "20px Arial";
+        ctx.fillText(`${Handler.world.player.hp} HP`, 10, 25);
+        ctx.fillStyle = 'gray';
+        ctx.font = "15px Arial";
+        ctx.fillText(`${Handler.world.score} Points`, 10, 45);
     }
 }

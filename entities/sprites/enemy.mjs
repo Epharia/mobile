@@ -9,7 +9,7 @@ export class Enemy extends Sprite {
         this.speed = speed;
         this.acceleration = 1000;
 
-        this.damage = 1;
+        this.damage = 5;
 
         this.direction = new Vector2D();
     }
