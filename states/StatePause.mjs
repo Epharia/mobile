@@ -3,7 +3,7 @@ import { State } from "./State.mjs";
 
 export class StatePause {
     tick() {
-        if (Handler.input.keys.pause.pressed) {
+        if (Handler.keyboard.keys.pause.pressed || Handler.touch.tapped) {
             State.setState(State.game);
         }
     }

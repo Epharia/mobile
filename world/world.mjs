@@ -4,16 +4,12 @@ import { Player } from "../entities/sprites/player/player.mjs";
 import { Vector2D } from "../util/vector2D.mjs";
 import { Enemy } from "../entities/sprites/enemy.mjs";
 import { Handler } from "../handler.mjs";
-
-const width = 2000;
-const height = 1000;
-
-const SpawnDelay = 20;
+import { world as cfg } from "../config.mjs";
 
 export class World {
     constructor() {
-        this.width = width;
-        this.height = height;
+        this.width = cfg.width;
+        this.height = cfg.height;
 
         this.score = 0;
         this.wave = 0;
@@ -32,12 +28,21 @@ export class World {
     }
 
     tick() {
+        //TODO Refactor
+        const amount = this.entities.list.filter((e) => e instanceof Enemy).length;
+
+        if (amount <= 0) {
+            if (this.spawnTimer > 3) this.spawnTimer = 3;
+        }
+
         if (this.spawnTimer > 0) {
             this.spawnTimer -= Handler.delta;
         } else if (this.entities.list.length < 200) {
-            this.spawnEnemies(Math.ceil(8 + 4.2 * ++this.wave))
-            this.spawnTimer = SpawnDelay;
+            this.spawnEnemies(Math.ceil(8 + 4.2 * ++this.wave));
+            this.spawnTimer = cfg.spawnDelay;
         }
+
+        Enemy.damp = Math.sqrt(this.entities.list.filter((e) => e instanceof Enemy).length);
 
         this.entities.tick();
         this.collisionHandler.process(this.entities.list);

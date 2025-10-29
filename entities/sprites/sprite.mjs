@@ -9,14 +9,10 @@ export class Sprite extends EntityCollidable {
         this.hp = 20;
 
         this.velocity = new Vector2D(velocityX, velocityY);
-
-        this.color = 'black';
-        this.grounded = false;
     }
 
     tick() {
         this.updatePosition();
-        this.color = 'black';
     }
 
     normalizeVelocity(speed = 500) {
@@ -32,7 +28,6 @@ export class Sprite extends EntityCollidable {
         if (this.pos.y > Handler.world.height - this.radius) {
             this.pos.y = Handler.world.height - this.radius;
             this.velocity.y = 0;
-            this.grounded = true;
         } else if (this.pos.y - this.radius < 0) {
             this.pos.y = this.radius;
             this.velocity.y = 0;
@@ -51,7 +46,5 @@ export class Sprite extends EntityCollidable {
      * @override
      * @param {EntityCollidable} other 
      */
-    onCollision(other) {
-        other.color = 'green' //TODO
-    }
+    onCollision(other) { }
 }

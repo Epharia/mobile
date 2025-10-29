@@ -6,7 +6,7 @@ export class StateDeath {
     static timer = 5;
     tick() {
         StateDeath.timer -= Handler.delta;
-        if (Handler.input.keys.pause.pressed || StateDeath.timer <= 0) {
+        if (Handler.keyboard.keys.pause.pressed || Handler.touch.tapped || StateDeath.timer <= 0) {
             StateDeath.timer = 5;
             Handler.world = new World();
             Handler.world.init();

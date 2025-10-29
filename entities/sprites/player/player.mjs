@@ -1,36 +1,38 @@
+import { player as cfg } from "../../../config.mjs";
 import { fillCircle, fillTriangle } from "../../../gfx/gfxLib.mjs";
 import { Handler } from "../../../handler.mjs";
 import { State } from "../../../states/State.mjs";
+import { StatePause } from "../../../states/StatePause.mjs";
 import { Vector2D } from "../../../util/vector2D.mjs";
-import { EntityProjectile } from "../../entitiyProjectile.mjs";
+import { Projectile } from "../../projectile.mjs";
 import { Enemy } from "../enemy.mjs";
 import { Sprite } from "../sprite.mjs";
 
-const iFrames = 0.25;
-const attackDelay = .7;
-
 export class Player extends Sprite {
     constructor() {
-        super(20, Handler.height - 84);
+        super(cfg.radius + 32, Handler.height - cfg.radius - 32);
 
-        this.radius = 32;
+        this.radius = cfg.radius;
 
-        this.speed = 500;
-        this.acceleration = 7500 + 5000;
-        this.friction = 5000;
+        this.speed = cfg.speed;
+        this.speedMax = cfg.speed;
+        this.acceleration = cfg.acceleration + cfg.friction;
+        this.friction = cfg.friction;
 
+        this.hitAnimTimer = 0;
         this.iFramesTimer = 0;
-        this.attackDelayTimer = this.attackDelay;
+        this.attackDelayTimer = cfg.attackDelay;
 
         this.orientation = Vector2D.right;
     }
 
     tick() {
-        this.color = 'black';
+        if (this.hitAnimTimer > 0) this.hitAnimTimer -= Handler.delta;
         if (this.iFramesTimer > 0) this.iFramesTimer -= Handler.delta;
         else this.iFramesTimer = 0;
-        this.move();
-        super.normalizeVelocity();
+        if (Handler.touch.tapped) { State.requestState(State.pause); }
+        this._move();
+        super.normalizeVelocity(this.speed);
         super.updatePosition();
         this.attack();
     }
@@ -40,37 +42,41 @@ export class Player extends Sprite {
             this.attackDelayTimer -= Handler.delta;
             return;
         }
-        let posWeapon = this.pos.copy.addScaled(this.orientation, this.radius + 16);
-        let projectile = new EntityProjectile(this, this.orientation, this.speed * 2, posWeapon.x, posWeapon.y);
+        let posWeapon = this.pos.copy.addScaled(this.orientation, (this.radius + (this.radius >> 1) + cfg.gap));
+        let projectile = new Projectile(this, this.orientation, this.speedMax * 2, posWeapon.x, posWeapon.y);
         Handler.world.entities.add(projectile);
-        this.attackDelayTimer = attackDelay;
+        this.attackDelayTimer = cfg.attackDelay;
     }
 
-    move() {
-        let input = Handler.touch.move;;
+    _move() {
+        let move = Handler.touch.joysticks.move.input;
 
         let keyboard = false;
-        if (input.equals(Vector2D.zero)) {
+        if (move.equals(Vector2D.zero)) {
+            this.speed = this.speedMax;
             //Horizontal Input
-            let left = Handler.input.keys.left.held,
-                right = Handler.input.keys.right.held;
+            let left = Handler.keyboard.keys.left.held,
+                right = Handler.keyboard.keys.right.held;
             if (right && !left) {
-                input = Vector2D.right;
+                move = Vector2D.right;
             } else if (!right && left) {
-                input = Vector2D.left;
+                move = Vector2D.left;
             }
 
 
             //Vertical Input
-            let up = Handler.input.keys.up.held,
-                down = Handler.input.keys.down.held;
+            let up = Handler.keyboard.keys.up.held,
+                down = Handler.keyboard.keys.down.held;
             if (down && !up) {
-                input.add(Vector2D.down);
+                move.add(Vector2D.down);
             } else if (!down && up) {
-                input.add(Vector2D.up);
+                move.add(Vector2D.up);
             }
 
             if (left || up || down || right) keyboard = true;
+        } else {
+            this.speed = Math.ceil(move.magnitude * this.speedMax);
+            if (this.speed >= this.speedMax) this.speed = this.speedMax;
         }
 
         //Friction
@@ -80,7 +86,7 @@ export class Player extends Sprite {
             this.velocity = Vector2D.zero;
         }
 
-        //TODO add mouse interaction
+        //TODO add full keyboard & mouse interaction
         if (keyboard) {
             if (!this.velocity.equals(Vector2D.zero)) {
                 this.orientation = this.velocity.copy;
@@ -88,13 +94,14 @@ export class Player extends Sprite {
             }
         }
 
-        let aim = Handler.touch.aim;
+        let aim = Handler.touch.joysticks.aim.input.normalize();
         if (!aim.equals(Vector2D.zero)) {
             this.orientation = aim;
         }
 
-        this.velocity.x += input.x * this.acceleration * Handler.delta;
-        this.velocity.y += input.y * this.acceleration * Handler.delta;
+        const inputNormal = move.normalize();
+        this.velocity.x += inputNormal.x * this.acceleration * Handler.delta;
+        this.velocity.y += inputNormal.y * this.acceleration * Handler.delta;
     }
 
     /**
@@ -102,12 +109,16 @@ export class Player extends Sprite {
      */
     render(ctx) {
         super.render(ctx);
-        let fillStyle = this.iFramesTimer > iFrames / 2 ? 'rgba(255, 50, 50, 0.8)' : 'white';
-        fillCircle(ctx, this.pos.x, this.pos.y, this.radius, fillStyle);
+        fillCircle(ctx, this.pos.x, this.pos.y, this.radius, 'white');
         fillTriangle(ctx,
-            this.pos.x + this.orientation.x * (this.radius + 16), // X Position around Circle
-            this.pos.y + this.orientation.y * (this.radius + 16), // Y Position around Circle
-            32, 16, this.orientation.angle);
+            this.pos.x + this.orientation.x * (this.radius + (this.radius >> 2) + cfg.gap), // X Position around Circle
+            this.pos.y + this.orientation.y * (this.radius + (this.radius >> 2) + cfg.gap), // Y Position around Circle
+            this.radius, this.radius / 2, this.orientation.angle);
+
+        if (this.hitAnimTimer > 0) {
+            const alpha = this.hitAnimTimer * 2;
+            fillCircle(ctx, this.pos.x, this.pos.y, this.radius, `rgba(0, 0, 0, ${alpha})`);
+        }
     }
 
     onCollision(other) {
@@ -115,7 +126,8 @@ export class Player extends Sprite {
             if (this.iFramesTimer) return;
             this.hp -= other.damage;
             if (this.hp <= 0) State.requestState(State.death);
-            this.iFramesTimer = iFrames;
+            this.iFramesTimer = cfg.iFrames;
+            this.hitAnimTimer = .5;
         }
     }
 }

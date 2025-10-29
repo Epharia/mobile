@@ -1,9 +1,11 @@
+import { player as cfg } from "../config.mjs";
 import { fillCircle } from "../gfx/gfxLib.mjs";
 import { Handler } from "../handler.mjs";
 import { Vector2D } from "../util/vector2D.mjs";
 import { EntityCollidable } from "./entityCollidable.mjs";
+import { Sprite } from "./sprites/sprite.mjs";
 
-export class EntityProjectile extends EntityCollidable {
+export class Projectile extends EntityCollidable {
     /**
      * Projectile
      * @param {Entity} origin 
@@ -14,7 +16,7 @@ export class EntityProjectile extends EntityCollidable {
         this.direction = direction;
         this.speed = speed;
         this.isFriendly = origin == Handler.world.player;
-        this.fillStyle = (this.isFriendly) ? 'rgba(77, 109, 190, .5)' : 'rgba(172, 87, 187, .5)'
+        this.fillStyle = (this.isFriendly) ? 'rgba(77, 190, 167, 0.5)' : 'rgba(172, 87, 187, .5)'
     }
 
     tick() {
@@ -34,10 +36,9 @@ export class EntityProjectile extends EntityCollidable {
     }
 
     onCollision(other) {
+        if (!other instanceof Sprite) return;
         if (this.isFriendly && other == Handler.world.player ||
             !this.isFriendly && other != Handler.world.player) return;
-        if (this.isFriendly) ++Handler.world.score;
-        Handler.world.entities.destroy(other);
         Handler.world.entities.destroy(this);
     }
 }
