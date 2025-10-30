@@ -8,26 +8,8 @@ window.addEventListener('load', function () {
     canvas.width = this.window.innerWidth;
     canvas.height = this.window.innerHeight;
 
-    class Game {
-        constructor(width, height) {
-            this.width = width;
-            this.height = height;
-            State.init();
-            Handler.init(this, canvas);
-
-            Handler.isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 2 && !/Windows/i.test(navigator.userAgent));
-        }
-
-        tick() {
-            State.tick();
-        }
-
-        render(ctx) {
-            State.render(ctx);
-        }
-    }
-
-    const game = new Game(canvas.width, canvas.height);
+    State.init();
+    Handler.init(canvas);
 
     let lastTime = 0;
     function loop(time) {
@@ -37,8 +19,8 @@ window.addEventListener('load', function () {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        game.tick();
-        game.render(ctx);
+        State.tick();
+        State.render(ctx);
 
         State.update();
 

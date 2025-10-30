@@ -1,22 +1,21 @@
-import { player as cfg } from "../config.mjs";
 import { fillCircle } from "../gfx/gfxLib.mjs";
 import { Handler } from "../handler.mjs";
 import { Vector2D } from "../util/vector2D.mjs";
 import { EntityCollidable } from "./entityCollidable.mjs";
-import { Sprite } from "./sprites/sprite.mjs";
 
 export class Projectile extends EntityCollidable {
     /**
      * Projectile
      * @param {Entity} origin 
      */
-    constructor(origin, direction = Vector2D.right, speed = 2000, x = origin.pos.x, y = origin.pos.y, radius = 8) {
+    constructor(origin, direction = Vector2D.right, damage = 1, speed = 2000, x = origin.pos.x, y = origin.pos.y, radius = 8) {
         super(x, y, radius);
         this.origin = origin;
         this.direction = direction;
         this.speed = speed;
+        this.damage = damage;
         this.isFriendly = origin == Handler.world.player;
-        this.fillStyle = (this.isFriendly) ? 'rgba(77, 190, 167, 0.5)' : 'rgba(172, 87, 187, .5)'
+        this.fillStyle = (this.isFriendly) ? 'rgba(77, 190, 167, 0.5)' : 'rgba(255, 100, 100, 1)'
     }
 
     tick() {
@@ -33,12 +32,5 @@ export class Projectile extends EntityCollidable {
 
     render(ctx) {
         fillCircle(ctx, this.pos.x, this.pos.y, this.radius, this.fillStyle);
-    }
-
-    onCollision(other) {
-        if (!other instanceof Sprite) return;
-        if (this.isFriendly && other == Handler.world.player ||
-            !this.isFriendly && other != Handler.world.player) return;
-        Handler.world.entities.destroy(this);
     }
 }

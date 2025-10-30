@@ -1,9 +1,9 @@
-import { player as cfg } from "../../config.mjs";
-import { fillCircle } from "../../gfx/gfxLib.mjs";
-import { Handler } from "../../handler.mjs";
-import { Vector2D } from "../../util/vector2D.mjs";
-import { Projectile } from "../projectile.mjs";
-import { Sprite } from "./sprite.mjs";
+import { player as cfg } from "../../../config.mjs";
+import { fillCircle } from "../../../gfx/gfxLib.mjs";
+import { Handler } from "../../../handler.mjs";
+import { Vector2D } from "../../../util/vector2D.mjs";
+import { Projectile } from "../../projectile.mjs";
+import { Sprite } from "../sprite.mjs";
 
 export class Enemy extends Sprite {
     static damp = 1; //TEMP
@@ -18,6 +18,8 @@ export class Enemy extends Sprite {
         this.hitAnimTimer = 0;
 
         this.direction = new Vector2D();
+
+        this.color = "#E9B63B";
     }
 
     tick() {
@@ -26,7 +28,8 @@ export class Enemy extends Sprite {
             Handler.world.entities.destroy(this);
         }
         if (this.hitAnimTimer > 0) this.hitAnimTimer -= Handler.delta;
-        this.updateDirection();
+        this._updateDirection();
+        this._adjustDirection();
         this._move();
         super.normalizeVelocity(this.speed);
         super.updatePosition();
@@ -36,12 +39,18 @@ export class Enemy extends Sprite {
         this.velocity.addScaled(this.direction, this.acceleration * Handler.delta);
     }
 
-    updateDirection() {
+    get playerDirection() {
         //Calculate direction of Player
-        let player = Handler.world.player;
-        this.direction = new Vector2D(this.pos.x, this.pos.y);
-        this.direction.sub(player.pos).normalize().negate();
+        const player = Handler.world.player;
+        const direction = this.pos.copy;
+        return direction.sub(player.pos).normalize().negate();
+    }
 
+    _updateDirection() {
+        this.direction = this.playerDirection;
+    }
+
+    _adjustDirection() {
         //Prevent enemies convergance
         let enemies = Handler.world.entities.list.filter((e) => e instanceof Enemy);
         if (enemies.length == 0) return;
@@ -56,7 +65,7 @@ export class Enemy extends Sprite {
 
     render(ctx) {
         super.render(ctx);
-        fillCircle(ctx, this.pos.x, this.pos.y, this.radius, "#E9B63B");
+        fillCircle(ctx, this.pos.x, this.pos.y, this.radius, this.color);
         if (this.hitAnimTimer > 0) {
             const alpha = this.hitAnimTimer;
             fillCircle(ctx, this.pos.x, this.pos.y, this.radius, `rgba(0,0,0,${alpha})`);
@@ -64,9 +73,21 @@ export class Enemy extends Sprite {
     }
 
     onCollision(other) {
+        if (!other.alive) return;
         if (other instanceof Projectile) {
-            this.hp -= cfg.damage;
-            this.hitAnimTimer = 1;
+            if (other.isFriendly) {
+                other.destroy();
+                this.hp -= other.damage;
+                this.hitAnimTimer = 1;
+            }
+        }
+
+        if (other instanceof Enemy) {
+            const normal = this.pos.copy.sub(other.pos).normalize();
+            const relativeVelocity = this.velocity.copy.sub(other.velocity);
+            const penetrationSpeed = normal.copy.dot(relativeVelocity);
+            if (penetrationSpeed > 0) return;
+            this.velocity.addScaled(normal, -penetrationSpeed);
         }
     }
 }

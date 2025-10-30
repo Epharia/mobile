@@ -17,7 +17,7 @@ export class Sprite extends EntityCollidable {
 
     normalizeVelocity(speed = 500) {
         if (this.velocity.magnitude2 > speed * speed) {
-            this.velocity.normalize().multiply(speed);
+            this.velocity.normalize().scale(speed);
         }
     }
 

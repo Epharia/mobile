@@ -2,10 +2,9 @@ import { player as cfg } from "../../../config.mjs";
 import { fillCircle, fillTriangle } from "../../../gfx/gfxLib.mjs";
 import { Handler } from "../../../handler.mjs";
 import { State } from "../../../states/State.mjs";
-import { StatePause } from "../../../states/StatePause.mjs";
 import { Vector2D } from "../../../util/vector2D.mjs";
 import { Projectile } from "../../projectile.mjs";
-import { Enemy } from "../enemy.mjs";
+import { Enemy } from "../enemies/enemy.mjs";
 import { Sprite } from "../sprite.mjs";
 
 export class Player extends Sprite {
@@ -43,7 +42,7 @@ export class Player extends Sprite {
             return;
         }
         let posWeapon = this.pos.copy.addScaled(this.orientation, (this.radius + (this.radius >> 1) + cfg.gap));
-        let projectile = new Projectile(this, this.orientation, this.speedMax * 2, posWeapon.x, posWeapon.y);
+        let projectile = new Projectile(this, this.orientation, cfg.damage, this.speedMax * 2, posWeapon.x, posWeapon.y);
         Handler.world.entities.add(projectile);
         this.attackDelayTimer = cfg.attackDelay;
     }
@@ -111,8 +110,8 @@ export class Player extends Sprite {
         super.render(ctx);
         fillCircle(ctx, this.pos.x, this.pos.y, this.radius, 'white');
         fillTriangle(ctx,
-            this.pos.x + this.orientation.x * (this.radius + (this.radius >> 2) + cfg.gap), // X Position around Circle
-            this.pos.y + this.orientation.y * (this.radius + (this.radius >> 2) + cfg.gap), // Y Position around Circle
+            this.pos.x + this.orientation.x * (this.radius + (this.radius / 4) + cfg.gap), // X Position around Circle
+            this.pos.y + this.orientation.y * (this.radius + (this.radius / 4) + cfg.gap), // Y Position around Circle
             this.radius, this.radius / 2, this.orientation.angle);
 
         if (this.hitAnimTimer > 0) {
@@ -121,13 +120,23 @@ export class Player extends Sprite {
         }
     }
 
+    _onHit(damage) {
+        if (this.iFramesTimer) return;
+        this.hp -= damage;
+        if (this.hp <= 0) State.requestState(State.death);
+        this.iFramesTimer = cfg.iFrames;
+        this.hitAnimTimer = .5;
+    }
+
     onCollision(other) {
         if (other instanceof Enemy) {
-            if (this.iFramesTimer) return;
-            this.hp -= other.damage;
-            if (this.hp <= 0) State.requestState(State.death);
-            this.iFramesTimer = cfg.iFrames;
-            this.hitAnimTimer = .5;
+            this._onHit(other.damage);
+        }
+        if (other instanceof Projectile) {
+            if (!other.isFriendly) {
+                this._onHit(other.damage);
+                other.destroy();
+            }
         }
     }
 }

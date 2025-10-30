@@ -39,7 +39,7 @@ export class Vector2D {
     }
 
     //Products
-    multiply(s = 0) {
+    scale(s = 0) {
         this.x *= s;
         this.y *= s;
         return this;

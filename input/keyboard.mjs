@@ -1,13 +1,13 @@
-import { Conf } from "../config.mjs"
+import { binds } from "../config.mjs"
 
-export class InputHandler {
+export class KeyboardHandler {
     keys = {
-        pause: new Key(Conf.BINDS.pause),
-        left: new Key(Conf.BINDS.left),
-        right: new Key(Conf.BINDS.right),
-        up: new Key(Conf.BINDS.up),
-        down: new Key(Conf.BINDS.down),
-        dash: new Key(Conf.BINDS.dash)
+        pause: new Key(binds.pause),
+        left: new Key(binds.left),
+        right: new Key(binds.right),
+        up: new Key(binds.up),
+        down: new Key(binds.down),
+        dash: new Key(binds.dash)
     }
 
     constructor() {

@@ -1,18 +1,14 @@
-import { InputHandler } from './input/keyboard.mjs';
+import { KeyboardHandler } from './input/keyboard.mjs';
 import { TouchHandler } from './input/touch.mjs';
 import { World } from './world/world.mjs';
 
 export class Handler {
     /** @type {Number} */
     static delta;
-    static game;
     /** @type {HTMLElement} */
     static canvas;
 
-    /** @type {Boolean} */
-    static isMobile;
-
-    /** @type {InputHandler} */
+    /** @type {KeyboardHandler} */
     static keyboard;
 
     /** @type {TouchHandler} */
@@ -21,10 +17,9 @@ export class Handler {
     /** @type {World} */
     static world;
 
-    static init(game, canvas) {
-        Handler.game = game;
+    static init(canvas) {
         Handler.canvas = canvas;
-        Handler.keyboard = new InputHandler();
+        Handler.keyboard = new KeyboardHandler();
         Handler.touch = new TouchHandler();
         Handler.world = new World();
         Handler.world.init();

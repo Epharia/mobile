@@ -142,7 +142,7 @@ class Joystick {
         if (!t) return Vector2D.zero;
         const d = t.current.copy.sub(t.start);
         const max2 = this.maxOffset * this.maxOffset;
-        if (d.magnitude2 > max2) return d.normalize().multiply(this.maxOffset);
+        if (d.magnitude2 > max2) return d.normalize().scale(this.maxOffset);
         return d;
     }
 
@@ -150,7 +150,7 @@ class Joystick {
         const k = this.knob;
         if (k.magnitude2 <= this.deadzone2) return Vector2D.zero;
         if (k === Vector2D.zero) return Vector2D.zero;
-        return k.copy.multiply(1 / this.maxOffset);
+        return k.copy.scale(1 / this.maxOffset);
     }
 
     render(ctx) {

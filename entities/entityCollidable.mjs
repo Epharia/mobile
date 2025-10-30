@@ -11,7 +11,7 @@ export class EntityCollidable extends Entity {
     }
 
     /**
-    * check collision between this sprite and another
+    * check collision between this entity and another
     * @param {EntityCollidable} other 
     */
     checkCollision(other) {
