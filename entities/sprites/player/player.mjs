@@ -86,14 +86,24 @@ export class Player extends Sprite {
             this.velocity = Vector2D.zero;
         }
 
-        //TODO add full keyboard & mouse interaction
-        if (keyboard) {
-            if (!this.velocity.equals(Vector2D.zero)) {
-                this.orientation = this.velocity.copy;
-                this.orientation.normalize();
-            }
+        //Mouse Aim
+        const mouse = Handler.mouse;
+        if (mouse.isActive) {
+            let mx = mouse.x;
+            let my = mouse.y;
+            const canvas = Handler.canvas;
+            const rect = canvas.getBoundingClientRect();
+
+            //Adjust for world Scaling
+            mx = (mouse.x - rect.left) * (canvas.width / rect.width);
+            my = (mouse.y - rect.top) * (canvas.height / rect.height);
+            mx = (mx - Handler.world.offsetX) / Handler.world.scale;
+            my = (my - Handler.world.offsetY) / Handler.world.scale;
+
+            this.orientation = new Vector2D(mx, my).sub(this.pos).normalize();
         }
 
+        //Joystick Aim
         let aim = Handler.touch.joysticks.aim.input.normalize();
         if (!aim.equals(Vector2D.zero)) {
             this.orientation = aim;
