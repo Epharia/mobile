@@ -57,6 +57,7 @@ export function drawHealth(ctx, x = 0, y = 0, width = 100, thickness = 10, progr
 
     ctx.fillStyle = backgroundColor;
     ctx.strokeStyle = borderColor;
+    ctx.lineWidth = thickness / 10
     ctx.fillRect(0, 0, width, thickness);
     ctx.strokeRect(0, 0, width, thickness)
 

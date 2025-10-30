@@ -22,14 +22,16 @@ export class StateGame {
         Handler.touch.joysticks.move.render(ctx);
         Handler.touch.joysticks.aim.render(ctx);
 
+        const scale = window.devicePixelRatio;
+
         //HP
-        const width = 200;
-        const thickness = 20;
-        drawHealth(ctx, (canvas.width - width) / 2, 20, width, thickness, Handler.world.player.hp / player.hp);
+        const width = 500 / scale;
+        const thickness = 25 / scale;
+        drawHealth(ctx, (canvas.width - width) / 2, 5, width, thickness, Handler.world.player.hp / player.hp);
 
         //Points
         ctx.fillStyle = 'gray';
-        ctx.font = "20px Arial";
+        ctx.font = `${20}px Arial`;
         ctx.fillText(`Kills: ${Handler.world.score}`, 10, 25);
 
         //Timer
