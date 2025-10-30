@@ -13,6 +13,7 @@ export class Player extends Sprite {
 
         this.radius = cfg.radius;
 
+        this.hp = cfg.hp;
         this.speed = cfg.speed;
         this.speedMax = cfg.speed;
         this.acceleration = cfg.acceleration + cfg.friction;

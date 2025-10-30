@@ -18,7 +18,7 @@ export class EnemyRanged extends Enemy {
         this.buffer = (distanceToPlayer - distanceDeadzone) * (distanceToPlayer - distanceDeadzone);
         this.color = "#628cffff"
 
-        this.damageRanged = 4;
+        this.damageRanged = 3;
         this.hp = 3;
 
         this.attackDelayTimer = this.attackDelay;

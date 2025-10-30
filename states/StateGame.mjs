@@ -1,3 +1,5 @@
+import { player } from "../config.mjs";
+import { drawHealth } from "../gfx/gfxLib.mjs";
 import { Handler } from "../handler.mjs";
 import { State } from "./State.mjs";
 
@@ -21,14 +23,14 @@ export class StateGame {
         Handler.touch.joysticks.aim.render(ctx);
 
         //HP
-        ctx.fillStyle = 'red';
-        ctx.font = "20px Arial";
-        ctx.fillText(`${Math.max(0, Handler.world.player.hp)} HP`, 10, 25);
+        const width = 200;
+        const thickness = 20;
+        drawHealth(ctx, (canvas.width - width) / 2, 20, width, thickness, Handler.world.player.hp / player.hp);
 
         //Points
         ctx.fillStyle = 'gray';
-        ctx.font = "15px Arial";
-        ctx.fillText(`${Handler.world.score} Points`, 10, 45);
+        ctx.font = "20px Arial";
+        ctx.fillText(`Kills: ${Handler.world.score}`, 10, 25);
 
         //Timer
         ctx.save();

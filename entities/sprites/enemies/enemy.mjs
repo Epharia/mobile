@@ -13,7 +13,7 @@ export class Enemy extends Sprite {
         this.acceleration = 500;
 
         this.hp = 5;
-        this.damage = 6;
+        this.damage = 7;
 
         this.hitAnimTimer = 0;
 

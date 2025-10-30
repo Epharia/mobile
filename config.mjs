@@ -20,6 +20,7 @@ export const world = {
 }
 
 export const player = {
+    hp: 30,
     speed: 500,
     acceleration: 2000,
     friction: 5000,
