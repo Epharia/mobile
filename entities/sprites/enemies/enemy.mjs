@@ -31,7 +31,7 @@ export class Enemy extends Sprite {
         this._updateDirection();
         this._adjustDirection();
         this._move();
-        super.normalizeVelocity(this.speed);
+        super.normalizeVelocity();
         super.updatePosition();
     }
 

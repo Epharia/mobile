@@ -10,8 +10,6 @@ export const binds = {
     dash: ["ShiftLeft"]
 }
 
-
-
 // Game parameters
 export const world = {
     width: 2000,
@@ -42,4 +40,9 @@ export const input = {
     deadzone: 1,
     maxOffset: 12,
     radius: 24
+}
+
+export const sprite = {
+    hp: 20,
+    speed: 500
 }

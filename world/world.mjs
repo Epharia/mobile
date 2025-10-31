@@ -6,6 +6,7 @@ import { Enemy } from "../entities/sprites/enemies/enemy.mjs";
 import { Handler } from "../handler.mjs";
 import { world as cfg } from "../config.mjs";
 import { EnemyRanged } from "../entities/sprites/enemies/enemyRanged.mjs";
+import { AiTestSprite } from "../entities/sprites/aiTestSprite.mjs";
 
 export class World {
     constructor() {
@@ -29,10 +30,17 @@ export class World {
     init() {
         this.player = new Player();
         this.entities.add(this.player);
+        // this.entities.add(new AiTestSprite());
     }
 
     tick() {
-        //TODO Refactor
+        this.#handleSpawn();
+        this.entities.tick();
+        this.collisionHandler.process(this.entities.list);
+    }
+
+    //TODO Refactor
+    #handleSpawn() {
         const amount = this.entities.list.filter((e) => e instanceof Enemy).length;
 
         if (amount <= 0) {
@@ -52,17 +60,14 @@ export class World {
                 this.spawnDelay -= Handler.delta;
             } else {
                 for (let i = 0; i < Math.ceil(Math.random() * this.wave); ++i)
-                    this.spawnEnemy()
+                    this.#spawnEnemy()
                 this.spawnDelay = .5 + Math.random();
             }
 
         Enemy.damp = Math.sqrt(this.entities.list.filter((e) => e instanceof Enemy).length);
-
-        this.entities.tick();
-        this.collisionHandler.process(this.entities.list);
     }
 
-    spawnEnemy() {
+    #spawnEnemy() {
         const s = this.spawns + this.spawnsRanged;
         const rng = Math.random();
         if (this.spawns > 0 && rng < this.spawns / s) {

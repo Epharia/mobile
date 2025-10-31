@@ -1,21 +1,25 @@
+import { sprite as cfg } from '../../config.mjs';
 import { Handler } from '../../handler.mjs';
 import { Vector2D } from '../../util/vector2D.mjs';
+import { TaskHandler } from '../ai/aiTasks.mjs';
 import { EntityCollidable } from '../entityCollidable.mjs';
 
 export class Sprite extends EntityCollidable {
-    constructor(x = 0, y = 0, radius = 32, velocityX = 0, velocityY = 0) {
+    constructor(x = 0, y = 0, radius = 32) {
         super(x, y, radius);
-
-        this.hp = 20;
-
-        this.velocity = new Vector2D(velocityX, velocityY);
+        this.hp = cfg.hp;
+        this.speed = cfg.speed;
+        this.velocity = Vector2D.zero;
+        this.tasks = new TaskHandler();
     }
 
     tick() {
+        this.tasks.tick();
+        this.normalizeVelocity();
         this.updatePosition();
     }
 
-    normalizeVelocity(speed = 500) {
+    normalizeVelocity(speed = this.speed) {
         if (this.velocity.magnitude2 > speed * speed) {
             this.velocity.normalize().scale(speed);
         }

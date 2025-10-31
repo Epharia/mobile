@@ -31,7 +31,8 @@ export class Player extends Sprite {
         if (this.iFramesTimer > 0) this.iFramesTimer -= Handler.delta;
         else this.iFramesTimer = 0;
         if (Handler.touch.tapped) { State.requestState(State.pause); }
-        this._move();
+        this.#move();
+        this.#aim();
         super.normalizeVelocity(this.speed);
         super.updatePosition();
         this.attack();
@@ -48,7 +49,7 @@ export class Player extends Sprite {
         this.attackDelayTimer = cfg.attackDelay;
     }
 
-    _move() {
+    #move() {
         let move = Handler.touch.joysticks.move.input;
 
         let keyboard = false;
@@ -86,7 +87,13 @@ export class Player extends Sprite {
             this.velocity = Vector2D.zero;
         }
 
-        //Mouse Aim
+        const inputNormal = move.normalize();
+        this.velocity.x += inputNormal.x * this.acceleration * Handler.delta;
+        this.velocity.y += inputNormal.y * this.acceleration * Handler.delta;
+    }
+
+    #aim() {
+        //Mouse
         const mouse = Handler.mouse;
         if (mouse.isActive) {
             let mx = mouse.x;
@@ -103,15 +110,11 @@ export class Player extends Sprite {
             this.orientation = new Vector2D(mx, my).sub(this.pos).normalize();
         }
 
-        //Joystick Aim
+        //Joystick
         let aim = Handler.touch.joysticks.aim.input.normalize();
         if (!aim.equals(Vector2D.zero)) {
             this.orientation = aim;
         }
-
-        const inputNormal = move.normalize();
-        this.velocity.x += inputNormal.x * this.acceleration * Handler.delta;
-        this.velocity.y += inputNormal.y * this.acceleration * Handler.delta;
     }
 
     /**
@@ -131,7 +134,7 @@ export class Player extends Sprite {
         }
     }
 
-    _onHit(damage) {
+    #onHit(damage) {
         if (this.iFramesTimer) return;
         this.hp -= damage;
         if (this.hp <= 0) State.requestState(State.death);
@@ -141,11 +144,11 @@ export class Player extends Sprite {
 
     onCollision(other) {
         if (other instanceof Enemy) {
-            this._onHit(other.damage);
+            this.#onHit(other.damage);
         }
         if (other instanceof Projectile) {
             if (!other.isFriendly) {
-                this._onHit(other.damage);
+                this.#onHit(other.damage);
                 other.destroy();
             }
         }
