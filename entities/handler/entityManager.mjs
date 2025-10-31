@@ -12,6 +12,7 @@ export class EntityManager {
         this.dead.forEach(e => {
             this.remove(e);
         });
+        this.dead = [];
     }
 
     render(ctx) {

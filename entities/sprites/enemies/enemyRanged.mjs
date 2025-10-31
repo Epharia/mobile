@@ -29,7 +29,7 @@ export class EnemyRanged extends Enemy {
     }
 
     tick() {
-        if (this.hp < 0) {
+        if (this.hp <= 0) {
             ++Handler.world.score;
             Handler.world.entities.destroy(this);
         }

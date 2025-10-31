@@ -42,8 +42,9 @@ export class World {
     //TODO Refactor
     #handleSpawn() {
         const amount = this.entities.list.filter((e) => e instanceof Enemy).length;
+        Enemy.damp = (amount > 1) ? Math.sqrt(this.entities.list.filter((e) => e instanceof Enemy).length) : 1;
 
-        if (amount <= 0) {
+        if (amount <= 0 && this.spawns + this.spawnsRanged <= 0) {
             if (this.spawnTimer > 3) this.spawnTimer = 3;
         }
 
@@ -54,34 +55,43 @@ export class World {
             this.spawns = Math.floor(7 / 8 * s) + 1;
             this.spawnsRanged = Math.floor(1 / 8 * s);
             this.spawnTimer = cfg.spawnDelay;
+            this.spawnDelay = 0;
         }
-        if (this.spawns + this.spawnsRanged > 0)
+
+        if (this.spawns + this.spawnsRanged > 0) {
             if (this.spawnDelay > 0) {
                 this.spawnDelay -= Handler.delta;
             } else {
                 for (let i = 0; i < Math.ceil(Math.random() * this.wave); ++i)
                     this.#spawnEnemy()
                 this.spawnDelay = .5 + Math.random();
+                // console.log(this.entities.list);
             }
-
-        Enemy.damp = Math.sqrt(this.entities.list.filter((e) => e instanceof Enemy).length);
+        }
     }
 
     #spawnEnemy() {
-        const s = this.spawns + this.spawnsRanged;
-        const rng = Math.random();
-        if (this.spawns > 0 && rng < this.spawns / s) {
-            let right = this.player.pos.x < this.width / 2;
-            let pos = Vector2D.random(this.width / 2 - 100, this.height);
-            if (right) pos.add(Vector2D.right.scale(this.width / 2 + 100))
-            this.entities.add(new Enemy(pos.x, pos.y, 200 + Math.random() * 100));
-            --this.spawns;
-        } else if (this.spawnsRanged > 0) {
-            let right = this.player.pos.x < this.width / 2;
-            let pos = Vector2D.random(this.width / 2 - 100, this.height);
-            if (right) pos.add(Vector2D.right.scale(this.width / 2 + 100))
-            this.entities.add(new EnemyRanged(pos.x, pos.y, 150 + Math.random() * 50));
-            --this.spawnsRanged;
+        let tries = 100;
+        while (--tries > 0) {
+            const s = this.spawns + this.spawnsRanged;
+            const rng = Math.random();
+            if (this.spawns > 0 && rng < .5) {
+                let right = this.player.pos.x < this.width / 2;
+                let pos = Vector2D.random(this.width / 2 - 100, this.height);
+                if (right) pos.add(Vector2D.right.scale(this.width / 2 + 100));
+                if (Number.isNaN(pos.x) || Number.isNaN(pos.y)) continue;
+                this.entities.add(new Enemy(pos.x, pos.y, 200 + Math.random() * 100));
+                --this.spawns;
+                tries = 0;
+            } else if (this.spawnsRanged > 0) {
+                let right = this.player.pos.x < this.width / 2;
+                let pos = Vector2D.random(this.width / 2 - 100, this.height);
+                if (right) pos.add(Vector2D.right.scale(this.width / 2 + 100));
+                if (Number.isNaN(pos.x) || Number.isNaN(pos.y)) continue;
+                this.entities.add(new EnemyRanged(pos.x, pos.y, 150 + Math.random() * 50));
+                --this.spawnsRanged;
+                tries = 0;
+            }
         }
     }
 

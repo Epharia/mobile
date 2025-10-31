@@ -12,7 +12,7 @@ export class Enemy extends Sprite {
         this.speed = speed;
         this.acceleration = 500;
 
-        this.hp = 5;
+        this.hp = 4;
         this.damage = 7;
 
         this.hitAnimTimer = 0;
@@ -23,7 +23,7 @@ export class Enemy extends Sprite {
     }
 
     tick() {
-        if (this.hp < 0) {
+        if (this.hp <= 0) {
             ++Handler.world.score;
             Handler.world.entities.destroy(this);
         }
