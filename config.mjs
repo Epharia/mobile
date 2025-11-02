@@ -1,5 +1,3 @@
-//TODO move global configs here
-
 //Keybinds
 export const binds = {
     pause: ["Escape"],
@@ -43,6 +41,11 @@ export const input = {
 }
 
 export const sprite = {
-    hp: 20,
-    speed: 500
+    hp: 4,
+    speed: 500,
+    damage: 4,
+
+    rangedDamage: 3,
+    rangedDelay: 2,
+    rangedDelayVariation: 2
 }

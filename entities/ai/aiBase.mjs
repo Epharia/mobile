@@ -1,5 +1,12 @@
 export class AIBase {
     /**
+     * [0: none], 
+     * [1: movement],
+     * [2: attack]
+     */
+    flags = 0;
+
+    /**
      * start condition
      */
     get shouldExecute() {
@@ -9,17 +16,19 @@ export class AIBase {
     /**
      * continue condition 
      */
-    get continueExecuting() {
+    get shouldContinue() {
         return this.shouldExecute;
     }
 
-    get isInterruptible() { //TODO
+    get isInterruptable() {
         return true;
     }
 
     onStart() { }
 
     onEnd() { }
+
+    onInterrupt() { }
 
     tick() { }
 }

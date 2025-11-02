@@ -50,6 +50,7 @@ export class Player extends Sprite {
     }
 
     #move() {
+        //TODO outsource to an InputHandler
         let move = Handler.touch.joysticks.move.input;
 
         let keyboard = false;
@@ -81,15 +82,10 @@ export class Player extends Sprite {
         }
 
         //Friction
-        if (this.velocity.magnitude2 > (this.friction * this.friction) * (Handler.delta * Handler.delta)) {
-            this.velocity.addScaled(this.velocity.copy.negate().normalize(), this.friction * Handler.delta);
-        } else {
-            this.velocity = Vector2D.zero;
-        }
+        this.deccelerate(this.friction);
 
         const inputNormal = move.normalize();
-        this.velocity.x += inputNormal.x * this.acceleration * Handler.delta;
-        this.velocity.y += inputNormal.y * this.acceleration * Handler.delta;
+        this.accelerate(inputNormal, this.acceleration);
     }
 
     #aim() {
@@ -122,16 +118,19 @@ export class Player extends Sprite {
      */
     render(ctx) {
         super.render(ctx);
-        fillCircle(ctx, this.pos.x, this.pos.y, this.radius, 'white');
+
         fillTriangle(ctx,
             this.pos.x + this.orientation.x * (this.radius + (this.radius / 4) + cfg.gap), // X Position around Circle
             this.pos.y + this.orientation.y * (this.radius + (this.radius / 4) + cfg.gap), // Y Position around Circle
             this.radius, this.radius / 2, this.orientation.angle);
 
+        ctx.save();
         if (this.hitAnimTimer > 0) {
-            const alpha = this.hitAnimTimer * 2;
-            fillCircle(ctx, this.pos.x, this.pos.y, this.radius, `rgba(0, 0, 0, ${alpha})`);
+            const alpha = .4;
+            ctx.globalAlpha = alpha
         }
+        fillCircle(ctx, this.pos.x, this.pos.y, this.radius, 'white');
+        ctx.restore();
     }
 
     #onHit(damage) {
@@ -139,7 +138,7 @@ export class Player extends Sprite {
         this.hp -= damage;
         if (this.hp <= 0) State.requestState(State.death);
         this.iFramesTimer = cfg.iFrames;
-        this.hitAnimTimer = .5;
+        this.hitAnimTimer = .08;
     }
 
     onCollision(other) {

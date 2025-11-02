@@ -6,12 +6,13 @@ import { Enemy } from "../entities/sprites/enemies/enemy.mjs";
 import { Handler } from "../handler.mjs";
 import { world as cfg } from "../config.mjs";
 import { EnemyRanged } from "../entities/sprites/enemies/enemyRanged.mjs";
-import { AiTestSprite } from "../entities/sprites/aiTestSprite.mjs";
+import { EnemyMelee } from "../entities/sprites/enemies/enemyMelee.mjs";
 
 export class World {
     constructor() {
         this.width = cfg.width;
         this.height = cfg.height;
+        this.densitiyModifier = 0;
 
         this.score = 0;
         this.wave = 0;
@@ -30,7 +31,6 @@ export class World {
     init() {
         this.player = new Player();
         this.entities.add(this.player);
-        // this.entities.add(new AiTestSprite());
     }
 
     tick() {
@@ -42,7 +42,7 @@ export class World {
     //TODO Refactor
     #handleSpawn() {
         const amount = this.entities.list.filter((e) => e instanceof Enemy).length;
-        Enemy.damp = (amount > 1) ? Math.sqrt(this.entities.list.filter((e) => e instanceof Enemy).length) : 1;
+        this.densitiyModifier = (amount > 1) ? Math.sqrt(this.entities.list.filter((e) => e instanceof Enemy).length) : 1;
 
         if (amount <= 0 && this.spawns + this.spawnsRanged <= 0) {
             if (this.spawnTimer > 3) this.spawnTimer = 3;
@@ -65,7 +65,6 @@ export class World {
                 for (let i = 0; i < Math.ceil(Math.random() * this.wave); ++i)
                     this.#spawnEnemy()
                 this.spawnDelay = .5 + Math.random();
-                // console.log(this.entities.list);
             }
         }
     }
@@ -80,7 +79,7 @@ export class World {
                 let pos = Vector2D.random(this.width / 2 - 100, this.height);
                 if (right) pos.add(Vector2D.right.scale(this.width / 2 + 100));
                 if (Number.isNaN(pos.x) || Number.isNaN(pos.y)) continue;
-                this.entities.add(new Enemy(pos.x, pos.y, 200 + Math.random() * 100));
+                this.entities.add(new EnemyMelee(pos.x, pos.y, 200 + Math.random() * 100));
                 --this.spawns;
                 tries = 0;
             } else if (this.spawnsRanged > 0) {

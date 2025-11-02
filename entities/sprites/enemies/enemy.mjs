@@ -1,75 +1,45 @@
-import { player as cfg } from "../../../config.mjs";
+import { sprite as cfg } from "../../../config.mjs";
 import { fillCircle } from "../../../gfx/gfxLib.mjs";
 import { Handler } from "../../../handler.mjs";
-import { Vector2D } from "../../../util/vector2D.mjs";
+import { Corpse } from "../../enemyDead.mjs";
 import { Projectile } from "../../projectile.mjs";
 import { Sprite } from "../sprite.mjs";
 
 export class Enemy extends Sprite {
-    static damp = 1; //TEMP
-    constructor(x = 0, y = 0, speed = 400) {
+    constructor(x = 0, y = 0, speed = 0) {
         super(x, y);
+        this.damage = cfg.damage;
         this.speed = speed;
-        this.acceleration = 500;
-
-        this.hp = 4;
-        this.damage = 7;
-
-        this.hitAnimTimer = 0;
-
-        this.direction = new Vector2D();
-
-        this.color = "#E9B63B";
     }
 
     tick() {
-        if (this.hp <= 0) {
-            ++Handler.world.score;
-            Handler.world.entities.destroy(this);
-        }
+        super.tick();
         if (this.hitAnimTimer > 0) this.hitAnimTimer -= Handler.delta;
-        this._updateDirection();
-        this._adjustDirection();
-        this._move();
-        super.normalizeVelocity();
-        super.updatePosition();
     }
 
-    _move() {
-        this.velocity.addScaled(this.direction, this.acceleration * Handler.delta);
-    }
-
-    get playerDirection() {
-        //Calculate direction of Player
-        const player = Handler.world.player;
-        const direction = this.pos.copy;
-        return direction.sub(player.pos).normalize().negate();
-    }
-
-    _updateDirection() {
-        this.direction = this.playerDirection;
-    }
-
-    _adjustDirection() {
-        //Prevent enemies convergance
-        let enemies = Handler.world.entities.list.filter((e) => e instanceof Enemy);
-        if (enemies.length == 0) return;
-        for (let e of enemies) {
-            const offset = new Vector2D(this.pos.x, this.pos.y).sub(e.pos);
-            const distance2 = offset.magnitude2;
-            if (distance2 == 0) continue;
-            const strength = (5000 / (distance2)) / Enemy.damp;
-            this.direction.addScaled(offset.normalize(), strength);
+    hurt(value) {
+        this.hp -= value;
+        this.hitAnimTimer = .08;
+        if (this.hp <= 0) {
+            this.#onDeath();
         }
+    }
+
+    #onDeath() {
+        ++Handler.world.score;
+        Handler.world.entities.destroy(this);
+        Handler.world.entities.add(new Corpse(this.pos, this.color));
     }
 
     render(ctx) {
         super.render(ctx);
-        fillCircle(ctx, this.pos.x, this.pos.y, this.radius, this.color);
+        ctx.save();
         if (this.hitAnimTimer > 0) {
-            const alpha = this.hitAnimTimer;
-            fillCircle(ctx, this.pos.x, this.pos.y, this.radius, `rgba(0,0,0,${alpha})`);
+            const alpha = 0.4;
+            ctx.globalAlpha = alpha;
         }
+        fillCircle(ctx, this.pos.x, this.pos.y, this.radius, this.color);
+        ctx.restore();
     }
 
     onCollision(other) {
@@ -77,8 +47,7 @@ export class Enemy extends Sprite {
         if (other instanceof Projectile) {
             if (other.isFriendly) {
                 other.destroy();
-                this.hp -= other.damage;
-                this.hitAnimTimer = 1;
+                this.hurt(other.damage);
             }
         }
 
