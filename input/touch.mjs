@@ -41,7 +41,6 @@ export class TouchHandler {
     }
 
     _onStart(event) {
-        event.preventDefault();
         for (const t of event.changedTouches) {
             this.#touches.set(t.identifier, new Touch(t));
         }
@@ -56,7 +55,6 @@ export class TouchHandler {
     }
 
     _onEnd(event) {
-        event.preventDefault();
         for (const t of event.changedTouches) {
             const wrapper = this.#touches.get(t.identifier);
             if (wrapper) {
@@ -70,7 +68,6 @@ export class TouchHandler {
     }
 
     _onCancel(event) {
-        event.preventDefault();
         for (const t of event.changedTouches) {
             this.#touches.delete(t.identifier);
         }
@@ -79,6 +76,11 @@ export class TouchHandler {
     _onContextMenu(event) {
         //Prevent Context Menu
         event.preventDefault();
+    }
+
+    reset() {
+        this.#touches = new Map();
+        this.#lastTap = undefined;
     }
 
     destroy() {

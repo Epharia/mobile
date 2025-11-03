@@ -10,7 +10,7 @@ export class StateDeath {
             StateDeath.timer = 5;
             Handler.world = new World();
             Handler.world.init();
-            State.setState(State.game);
+            State.requestState(State.game);
         }
     }
 

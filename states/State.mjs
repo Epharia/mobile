@@ -5,8 +5,6 @@ import { StateDeath } from "./StateDeath.mjs";
 
 /* TODO Rework
 **  Change Structure
-**  Add onEnter()
-**  Add onLeave()
 */
 
 export class State {
@@ -18,10 +16,10 @@ export class State {
         State.game = new StateGame();
         State.pause = new StatePause();
         State.death = new StateDeath();
-        State.setState(State.game);
+        State.#setState(State.game);
     }
 
-    static setState(next) {
+    static #setState(next) {
         State.current = next;
     }
 
@@ -31,8 +29,10 @@ export class State {
 
     static update() {
         if (State.next == undefined) return;
+        if (State.current.onLeave) State.current.onLeave();
         State.current = State.next;
         State.next = undefined;
+        if (State.current.onEnter) State.current.onEnter();
     }
 
     static tick() {

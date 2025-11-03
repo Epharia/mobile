@@ -1,5 +1,6 @@
 import { Handler } from './handler.mjs';
 import { State } from './states/State.mjs';
+import { initHTMLDialogs } from './ui/manager.mjs';
 
 globalThis.addEventListener('load', async function () {
     const canvas = document.getElementById('canvas');
@@ -7,6 +8,8 @@ globalThis.addEventListener('load', async function () {
 
     canvas.width = globalThis.innerWidth;
     canvas.height = globalThis.innerHeight;
+
+    initHTMLDialogs();
 
     State.init();
     await Handler.init(canvas);
@@ -38,16 +41,3 @@ function resize() {
 }
 globalThis.addEventListener('resize', resize);
 globalThis.addEventListener('orientationchange', resize);
-
-//Temporary solution to activate fullscreen
-//TODO add toggle fullscreen button
-globalThis.addEventListener('pointerup', fullscreen, { passive: false });
-
-async function fullscreen(e) {
-    globalThis.removeEventListener("pointerup", fullscreen);
-    try {
-        await document.getElementById('canvas').requestFullscreen();
-    } catch (err) {
-        console.error(err.name, err.message);
-    }
-}

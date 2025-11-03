@@ -1,6 +1,6 @@
 //Keybinds
 export const binds = {
-    pause: ["Escape"],
+    pause: ["Escape", "KeyP"],
     left: ["ArrowLeft", "KeyA"],
     right: ["ArrowRight", "KeyD"],
     up: ["ArrowUp", "KeyW"],

@@ -7,9 +7,13 @@ export class StateGame {
 
     tick() {
         if (Handler.keyboard.keys.pause.pressed) {
-            State.setState(State.pause);
+            State.requestState(State.pause);
         }
         Handler.world.tick();
+    }
+
+    onEnter() {
+        Handler.touch.reset();
     }
 
     /**
