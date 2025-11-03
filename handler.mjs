@@ -1,7 +1,6 @@
 import { KeyboardHandler } from './input/keyboard.mjs';
 import { MouseHandler } from './input/mouse.mjs';
 import { TouchHandler } from './input/touch.mjs';
-import { World } from './world/world.mjs';
 
 export class Handler {
     /** @type {Number} */
@@ -22,11 +21,19 @@ export class Handler {
     /** @type {World} */
     static world;
 
-    static init(canvas) {
+    /**
+     * Initialize the global handler
+     * @param {HTMLElement} canvas
+     */
+    static async init(canvas) {
         Handler.canvas = canvas;
         Handler.keyboard = new KeyboardHandler();
         Handler.mouse = new MouseHandler();
         Handler.touch = new TouchHandler();
+
+        //TODO find a better Solution, Rework handler?
+        //avoid circular Imports
+        const { World } = await import('./world/world.mjs');
         Handler.world = new World();
         Handler.world.init();
     }

@@ -4,15 +4,19 @@ import { Player } from "../entities/sprites/player/player.mjs";
 import { Vector2D } from "../util/vector2D.mjs";
 import { Enemy } from "../entities/sprites/enemies/enemy.mjs";
 import { Handler } from "../handler.mjs";
-import { world as cfg } from "../config.mjs";
+import { world as cfg, player } from "../config.mjs";
 import { EnemyRanged } from "../entities/sprites/enemies/enemyRanged.mjs";
 import { EnemyMelee } from "../entities/sprites/enemies/enemyMelee.mjs";
+
+/* TODO Implement Background -> prerendered random tiled canvas???
+**  Add Camera
+*/
 
 export class World {
     constructor() {
         this.width = cfg.width;
         this.height = cfg.height;
-        this.densitiyModifier = 0;
+        this.densityModifier = 0;
 
         this.score = 0;
         this.wave = 0;
@@ -29,7 +33,7 @@ export class World {
     }
 
     init() {
-        this.player = new Player();
+        this.player = new Player(player.radius * 2, Handler.height - player.radius * 2);
         this.entities.add(this.player);
     }
 
@@ -42,7 +46,7 @@ export class World {
     //TODO Refactor
     #handleSpawn() {
         const amount = this.entities.list.filter((e) => e instanceof Enemy).length;
-        this.densitiyModifier = (amount > 1) ? Math.sqrt(this.entities.list.filter((e) => e instanceof Enemy).length) : 1;
+        this.densityModifier = (amount > 1) ? Math.sqrt(this.entities.list.filter((e) => e instanceof Enemy).length) : 1;
 
         if (amount <= 0 && this.spawns + this.spawnsRanged <= 0) {
             if (this.spawnTimer > 3) this.spawnTimer = 3;
@@ -63,35 +67,36 @@ export class World {
                 this.spawnDelay -= Handler.delta;
             } else {
                 for (let i = 0; i < Math.ceil(Math.random() * this.wave); ++i)
-                    this.#spawnEnemy()
+                    this.#spawnRandomEnemy()
                 this.spawnDelay = .5 + Math.random();
             }
         }
     }
 
-    #spawnEnemy() {
+    #spawnRandomEnemy() {
         let tries = 100;
         while (--tries > 0) {
-            const s = this.spawns + this.spawnsRanged;
             const rng = Math.random();
-            if (this.spawns > 0 && rng < .5) {
-                let right = this.player.pos.x < this.width / 2;
-                let pos = Vector2D.random(this.width / 2 - 100, this.height);
-                if (right) pos.add(Vector2D.right.scale(this.width / 2 + 100));
-                if (Number.isNaN(pos.x) || Number.isNaN(pos.y)) continue;
-                this.entities.add(new EnemyMelee(pos.x, pos.y, 200 + Math.random() * 100));
+            if (this.spawns > 0 && rng < .7) {
+                if (!this.#spawn(new EnemyMelee(0, 0, 200 + Math.random() * 100))) continue;
                 --this.spawns;
                 tries = 0;
             } else if (this.spawnsRanged > 0) {
-                let right = this.player.pos.x < this.width / 2;
-                let pos = Vector2D.random(this.width / 2 - 100, this.height);
-                if (right) pos.add(Vector2D.right.scale(this.width / 2 + 100));
-                if (Number.isNaN(pos.x) || Number.isNaN(pos.y)) continue;
-                this.entities.add(new EnemyRanged(pos.x, pos.y, 150 + Math.random() * 50));
+                if (!this.#spawn(new EnemyRanged(0, 0, 150 + Math.random() * 50))) continue;
                 --this.spawnsRanged;
                 tries = 0;
             }
         }
+    }
+
+    #spawn(entity) {
+        const right = this.player.pos.x < this.width / 2;
+        const pos = Vector2D.random(this.width / 2 - 100, this.height);
+        if (right) pos.add(Vector2D.right.scale(this.width / 2 + 100));
+        if (Number.isNaN(pos.x) || Number.isNaN(pos.y)) return false;
+        entity.pos = pos;
+        this.entities.add(entity);
+        return true;
     }
 
     /**
@@ -109,8 +114,8 @@ export class World {
     }
 
     calculateScale() {
-        let scaleX = Handler.canvas.width / this.width;
-        let scaleY = Handler.canvas.height / this.height;
+        const scaleX = Handler.canvas.width / this.width;
+        const scaleY = Handler.canvas.height / this.height;
         this.scale = Math.min(scaleX, scaleY);
 
         this.offsetX = (Handler.canvas.width - this.width * this.scale) / 2;

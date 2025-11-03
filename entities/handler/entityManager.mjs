@@ -30,6 +30,7 @@ export class EntityManager {
     }
 
     remove(e) {
+        //O(n) -> maybe improve
         const idx = this.entities.indexOf(e);
         if (idx !== -1) this.entities.splice(idx, 1);
     }

@@ -26,11 +26,11 @@ export class TouchHandler {
         this._onCancel = this._onCancel.bind(this);
         this._onContextMenu = this._onContextMenu.bind(this);
 
-        window.addEventListener("touchstart", this._onStart, { passive: false });
-        window.addEventListener("touchmove", this._onMove, { passive: false });
-        window.addEventListener("touchend", this._onEnd, { passive: false });
-        window.addEventListener("touchcancel", this._onCancel, { passive: false });
-        window.addEventListener("contextmenu", this._onContextMenu, { passive: false });
+        globalThis.addEventListener("touchstart", this._onStart, { passive: false });
+        globalThis.addEventListener("touchmove", this._onMove, { passive: false });
+        globalThis.addEventListener("touchend", this._onEnd, { passive: false });
+        globalThis.addEventListener("touchcancel", this._onCancel, { passive: false });
+        globalThis.addEventListener("contextmenu", this._onContextMenu, { passive: false });
     }
 
     _findTouch(predicate) {
@@ -82,11 +82,11 @@ export class TouchHandler {
     }
 
     destroy() {
-        window.removeEventListener("touchstart", this._onStart);
-        window.removeEventListener("touchmove", this._onMove);
-        window.removeEventListener("touchend", this._onEnd);
-        window.removeEventListener("touchcancel", this._onCancel);
-        window.removeEventListener("contextmenu", this._onContextMenu);
+        globalThis.removeEventListener("touchstart", this._onStart);
+        globalThis.removeEventListener("touchmove", this._onMove);
+        globalThis.removeEventListener("touchend", this._onEnd);
+        globalThis.removeEventListener("touchcancel", this._onCancel);
+        globalThis.removeEventListener("contextmenu", this._onContextMenu);
         this.#touches.clear();
     }
 }

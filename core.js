@@ -1,15 +1,15 @@
 import { Handler } from './handler.mjs';
 import { State } from './states/State.mjs';
 
-window.addEventListener('load', function () {
+globalThis.addEventListener('load', async function () {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
 
-    canvas.width = this.window.innerWidth;
-    canvas.height = this.window.innerHeight;
+    canvas.width = globalThis.innerWidth;
+    canvas.height = globalThis.innerHeight;
 
     State.init();
-    Handler.init(canvas);
+    await Handler.init(canvas);
 
     let lastTime = 0;
     function loop(time) {
@@ -32,9 +32,22 @@ window.addEventListener('load', function () {
 });
 
 function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = globalThis.innerWidth;
+    canvas.height = globalThis.innerHeight;
     Handler.world.calculateScale();
 }
-window.addEventListener('resize', resize);
-window.addEventListener('orientationchange', resize);
+globalThis.addEventListener('resize', resize);
+globalThis.addEventListener('orientationchange', resize);
+
+//Temporary solution to activate fullscreen
+//TODO add toggle fullscreen button
+globalThis.addEventListener('pointerup', fullscreen, { passive: false });
+
+async function fullscreen(e) {
+    globalThis.removeEventListener("pointerup", fullscreen);
+    try {
+        await document.getElementById('canvas').requestFullscreen();
+    } catch (err) {
+        console.error(err.name, err.message);
+    }
+}

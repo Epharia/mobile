@@ -14,7 +14,7 @@ export class Projectile extends EntityCollidable {
         this.direction = direction;
         this.speed = speed;
         this.damage = damage;
-        this.isFriendly = origin == Handler.world.player;
+        if (origin) this.isFriendly = origin == Handler.world.player;
         this.fillStyle = (this.isFriendly) ? 'rgba(77, 190, 167, 0.5)' : 'rgba(255, 100, 100, 1)'
     }
 
@@ -22,10 +22,10 @@ export class Projectile extends EntityCollidable {
         this.pos.addScaled(this.direction, this.speed * Handler.delta);
 
         //Bounds
-        if (this.pos.y > Handler.world.height - this.radius ||
+        if (this.pos.y + this.radius > Handler.world.height ||
             this.pos.y - this.radius < 0 ||
             this.pos.x - this.radius < 0 ||
-            this.pos.x > Handler.world.width - this.radius) {
+            this.pos.x + this.radius > Handler.world.width) {
             Handler.world.entities.destroy(this);
         }
     }

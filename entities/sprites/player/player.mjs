@@ -8,8 +8,8 @@ import { Enemy } from "../enemies/enemy.mjs";
 import { Sprite } from "../sprite.mjs";
 
 export class Player extends Sprite {
-    constructor() {
-        super(cfg.radius + 32, Handler.height - cfg.radius - 32);
+    constructor(x, y) {
+        super(x, y);
 
         this.radius = cfg.radius;
 
@@ -43,8 +43,8 @@ export class Player extends Sprite {
             this.attackDelayTimer -= Handler.delta;
             return;
         }
-        let posWeapon = this.pos.copy.addScaled(this.orientation, (this.radius + (this.radius >> 1) + cfg.gap));
-        let projectile = new Projectile(this, this.orientation, cfg.damage, this.speedMax * 2, posWeapon.x, posWeapon.y);
+        const posWeapon = this.pos.copy.addScaled(this.orientation, (this.radius + (this.radius >> 1) + cfg.gap));
+        const projectile = new Projectile(this, this.orientation, cfg.damage, this.speedMax * 2, posWeapon.x, posWeapon.y);
         Handler.world.entities.add(projectile);
         this.attackDelayTimer = cfg.attackDelay;
     }
@@ -53,11 +53,10 @@ export class Player extends Sprite {
         //TODO outsource to an InputHandler
         let move = Handler.touch.joysticks.move.input;
 
-        let keyboard = false;
         if (move.equals(Vector2D.zero)) {
             this.speed = this.speedMax;
             //Horizontal Input
-            let left = Handler.keyboard.keys.left.held,
+            const left = Handler.keyboard.keys.left.held,
                 right = Handler.keyboard.keys.right.held;
             if (right && !left) {
                 move = Vector2D.right;
@@ -67,15 +66,13 @@ export class Player extends Sprite {
 
 
             //Vertical Input
-            let up = Handler.keyboard.keys.up.held,
+            const up = Handler.keyboard.keys.up.held,
                 down = Handler.keyboard.keys.down.held;
             if (down && !up) {
                 move.add(Vector2D.down);
             } else if (!down && up) {
                 move.add(Vector2D.up);
             }
-
-            if (left || up || down || right) keyboard = true;
         } else {
             this.speed = Math.ceil(move.magnitude * this.speedMax);
             if (this.speed >= this.speedMax) this.speed = this.speedMax;

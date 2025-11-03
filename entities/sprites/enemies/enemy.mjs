@@ -4,12 +4,14 @@ import { Handler } from "../../../handler.mjs";
 import { Corpse } from "../../enemyDead.mjs";
 import { Projectile } from "../../projectile.mjs";
 import { Sprite } from "../sprite.mjs";
+import { TaskHandler } from '../../ai/taskHandler.mjs';
 
 export class Enemy extends Sprite {
     constructor(x = 0, y = 0, speed = 0) {
         super(x, y);
         this.damage = cfg.damage;
         this.speed = speed;
+        this.tasks = new TaskHandler();
     }
 
     tick() {

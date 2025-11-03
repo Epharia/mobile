@@ -38,7 +38,6 @@ export class StateGame {
         ctx.save();
         ctx.fillStyle = 'gray';
         ctx.font = "15px Arial";
-        // ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
         ctx.fillText(`${Math.ceil(Handler.world.spawnTimer)} s`, 10, Handler.canvas.height - 10);
         ctx.restore();

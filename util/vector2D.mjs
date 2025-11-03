@@ -1,5 +1,3 @@
-import { Handler } from "../handler.mjs";
-
 export class Vector2D {
     constructor(x = 0, y = x) {
         this.x = x;
@@ -33,8 +31,8 @@ export class Vector2D {
     }
 
     subScalar(s = 0) {
-        this.x += s;
-        this.y += s;
+        this.x -= s;
+        this.y -= s;
         return this;
     }
 
@@ -166,11 +164,7 @@ export class Vector2D {
         return new Vector2D();
     }
 
-    static randomRadius(radius = 512) {
-        this.random(radius, radius);
-    }
-
-    static random(x = Handler.world.width, y = Handler.world.height) {
+    static random(x, y) {
         return new Vector2D(Math.random() * x, Math.random() * y);
     }
 }

@@ -1,7 +1,6 @@
 import { sprite as cfg } from '../../config.mjs';
 import { Handler } from '../../handler.mjs';
 import { Vector2D } from '../../util/vector2D.mjs';
-import { TaskHandler } from '../ai/taskHandler.mjs';
 import { EntityCollidable } from '../entityCollidable.mjs';
 
 export class Sprite extends EntityCollidable {
@@ -10,8 +9,8 @@ export class Sprite extends EntityCollidable {
         this.hp = cfg.hp;
         this.speed = cfg.speed;
         this.velocity = Vector2D.zero;
+        this.hitAnimTimer = 0;
         this.acceleration = 500;
-        this.tasks = new TaskHandler();
     }
 
     tick() {
@@ -45,18 +44,14 @@ export class Sprite extends EntityCollidable {
         //Bounds
         if (this.pos.y > Handler.world.height - this.radius) {
             this.pos.y = Handler.world.height - this.radius;
-            this.velocity.y = 0;
-        } else if (this.pos.y - this.radius < 0) {
+        } else if (this.pos.y < this.radius) {
             this.pos.y = this.radius;
-            this.velocity.y = 0;
         }
 
-        if (this.pos.x - this.radius < 0) {
+        if (this.pos.x < this.radius) {
             this.pos.x = this.radius;
-            this.velocity.x = 0;
         } else if (this.pos.x > Handler.world.width - this.radius) {
             this.pos.x = Handler.world.width - this.radius;
-            this.velocity.x = 0;
         }
     }
 

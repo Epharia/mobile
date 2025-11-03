@@ -11,16 +11,16 @@ export class KeyboardHandler {
     }
 
     constructor() {
-        window.addEventListener('keydown', e => {
-            for (const [key, k] of Object.entries(this.keys)) {
+        globalThis.addEventListener('keydown', e => {
+            for (const [, k] of Object.entries(this.keys)) {
                 for (const bind of k.binds)
                     if (bind == e.code) {
                         k.toggle(true);
                     }
             }
         });
-        window.addEventListener('keyup', e => {
-            for (const [key, k] of Object.entries(this.keys)) {
+        globalThis.addEventListener('keyup', e => {
+            for (const [, k] of Object.entries(this.keys)) {
                 for (const bind of k.binds)
                     if (bind == e.code) {
                         k.toggle(false);

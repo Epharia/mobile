@@ -6,9 +6,9 @@ export class MouseHandler {
 
         this.#update = this.#update.bind(this);
 
-        window.addEventListener("mousemove", this.#update, { passive: false });
-        window.addEventListener("mouseover", () => this.isActive = true, { passive: true });
-        window.addEventListener("mouseout", () => this.isActive = false, { passive: true });
+        globalThis.addEventListener("mousemove", this.#update, { passive: false });
+        globalThis.addEventListener("mouseover", () => this.isActive = true, { passive: true });
+        globalThis.addEventListener("mouseout", () => this.isActive = false, { passive: true });
     }
 
     #update = (event) => {

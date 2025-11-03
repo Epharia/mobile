@@ -30,5 +30,5 @@ export class AIBase {
 
     onInterrupt() { }
 
-    tick() { }
+    tick() {/* override in subclass */ }
 }

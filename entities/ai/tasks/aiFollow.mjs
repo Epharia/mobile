@@ -1,5 +1,4 @@
 import { Handler } from "../../../handler.mjs";
-import { Vector2D } from "../../../util/vector2D.mjs";
 import { Enemy } from "../../sprites/enemies/enemy.mjs";
 import { Sprite } from "../../sprites/sprite.mjs";
 import { AIBase } from "../aiBase.mjs";
@@ -18,7 +17,7 @@ export class AiFollow extends AIBase {
         const direction = this.#playerVector.normalize();
 
         //Prevent Converging
-        const modifier = Handler.world.densitiyModifier;
+        const modifier = Handler.world.densityModifier;
         if (modifier > 0) {
             let enemies = Handler.world.entities.list.filter((e) => e instanceof Enemy);
             if (enemies.length == 0) return;

@@ -3,6 +3,12 @@ import { StateGame } from "./StateGame.mjs";
 import { Handler } from "../handler.mjs";
 import { StateDeath } from "./StateDeath.mjs";
 
+/* TODO Rework
+**  Change Structure
+**  Add onEnter()
+**  Add onLeave()
+*/
+
 export class State {
     static game;
     static pause;

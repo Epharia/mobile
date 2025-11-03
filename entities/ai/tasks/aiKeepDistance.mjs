@@ -18,7 +18,7 @@ export class AiKeepDistance extends AIBase {
         const direction = this.#playerVector.normalize();
 
         //Prevent Converging
-        const modifier = Handler.world.densitiyModifier;
+        const modifier = Handler.world.densityModifier;
         if (modifier > 0) {
             let enemies = Handler.world.entities.list.filter((e) => e instanceof Enemy);
             if (enemies.length == 0) return;
