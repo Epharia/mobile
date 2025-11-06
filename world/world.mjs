@@ -19,6 +19,7 @@ export class World {
         this.densityModifier = 0;
 
         this.score = 0;
+        this.experience = 0;
         this.wave = 0;
 
         this.spawnTimer = 3

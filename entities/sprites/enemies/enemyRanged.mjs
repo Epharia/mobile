@@ -9,7 +9,7 @@ import { Enemy } from "./enemy.mjs";
 
 export class EnemyRanged extends Enemy {
     constructor(x, y, speed = 200) {
-        super(x, y, speed)
+        super(x, y, speed, 3)
         this.hp = 3;
         this.color = "#628cffff";
 

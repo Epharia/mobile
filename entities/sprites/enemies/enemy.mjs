@@ -5,12 +5,14 @@ import { Corpse } from "../../enemyDead.mjs";
 import { Projectile } from "../../projectile.mjs";
 import { Sprite } from "../sprite.mjs";
 import { TaskHandler } from '../../ai/taskHandler.mjs';
+import { EntityCollectible } from "../../entityCollectible.mjs";
 
 export class Enemy extends Sprite {
-    constructor(x = 0, y = 0, speed = 0) {
+    constructor(x = 0, y = 0, speed = 0, experience = 1) {
         super(x, y);
         this.damage = cfg.damage;
         this.speed = speed;
+        this.experience = experience;
         this.tasks = new TaskHandler();
     }
 
@@ -31,6 +33,7 @@ export class Enemy extends Sprite {
         ++Handler.world.score;
         Handler.world.entities.destroy(this);
         Handler.world.entities.add(new Corpse(this.pos, this.color));
+        EntityCollectible.drop(this.pos, this.experience);
     }
 
     render(ctx) {
