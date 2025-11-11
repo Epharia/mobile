@@ -1,5 +1,5 @@
 import { player } from "../config.mjs";
-import { drawHealth } from "../gfx/gfxLib.mjs";
+import { drawHealth, drawExperience } from "../gfx/gfxLib.mjs";
 import { Handler } from "../handler.mjs";
 import { State } from "./State.mjs";
 
@@ -32,6 +32,7 @@ export class StateGame {
         const width = 500 / scale;
         const thickness = 25 / scale;
         drawHealth(ctx, (canvas.width - width) / 2, 5, width, thickness, Handler.world.player.hp / player.hp);
+        drawExperience(ctx, (canvas.width - width) / 2, thickness + 5, width, thickness, Handler.world.experience / 100);
 
         //Points
         ctx.fillStyle = 'gray';
