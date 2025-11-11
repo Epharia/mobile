@@ -7,6 +7,7 @@ import { Handler } from "../handler.mjs";
 import { world as cfg, player } from "../config.mjs";
 import { EnemyRanged } from "../entities/sprites/enemies/enemyRanged.mjs";
 import { EnemyMelee } from "../entities/sprites/enemies/enemyMelee.mjs";
+import { EnemyDash } from "../entities/sprites/enemies/enemyDash.mjs";
 
 /* TODO Implement Background -> prerendered random tiled canvas???
 **  Add Camera
@@ -74,6 +75,7 @@ export class World {
         }
     }
 
+    //TODO: include EnemyDash
     #spawnRandomEnemy() {
         let tries = 100;
         while (--tries > 0) {

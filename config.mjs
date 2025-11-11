@@ -49,5 +49,10 @@ export const sprite = {
 
     rangedDamage: 3,
     rangedDelay: 2,
-    rangedDelayVariation: 2
+    rangedDelayVariation: 2,
+    dashDelay: 2,
+    dashDelayVariation: 1,
+    dashAnimation: 0.5,
+    dashDuration: 0.2,
+    dashMultiplier: 10
 }
