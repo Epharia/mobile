@@ -68,3 +68,23 @@ export function drawHealth(ctx, x = 0, y = 0, width = 100, thickness = 10, progr
 
     ctx.restore();
 }
+
+//TODO: leveling system
+export function drawExperience(ctx, x = 0, y = 0, width = 100, thickness = 10, progress = 1, mainColor = "rgba(9, 107, 0, 1)", backgroundColor = 'rgba(113, 113, 113, 1)', borderColor = 'rgba(255, 255, 255, 1)') {
+    ctx.save();
+
+    ctx.translate(x, y);
+
+    ctx.fillStyle = backgroundColor;
+    ctx.strokeStyle = borderColor;
+    ctx.lineWidth = thickness / 10
+    ctx.fillRect(0, 0, width, thickness);
+    ctx.strokeRect(0, 0, width, thickness)
+
+    if (progress > 0 && progress <= 1) {
+        ctx.fillStyle = mainColor;
+        ctx.fillRect(0, 0, width * progress, thickness);
+    }
+
+    ctx.restore();
+}
