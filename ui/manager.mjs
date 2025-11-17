@@ -10,5 +10,4 @@ export function initHTMLDialogs() {
     if (!globalThis?.document) return;
     const ui = document.getElementById('ui');
     ui.appendChild(dialogPause.container);
-    ui.appendChild(dialogTest.container);
 }
