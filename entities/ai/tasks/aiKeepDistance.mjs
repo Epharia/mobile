@@ -11,7 +11,7 @@ export class AiKeepDistance extends AIBase {
         this.sprite = sprite;
         this.triggerDist2 = trigger * trigger;
         this.targetDist2 = target * target;
-        this.flags = 1;
+        this.flags = 1; //0001
     }
 
     tick() {

@@ -58,13 +58,14 @@ export class World {
             this.spawnTimer -= Handler.delta;
         } else {
             const s = Math.ceil(8 + 4.2 * ++this.wave);
-            this.spawns = Math.floor(7 / 8 * s) + 1;
+            this.spawns = Math.floor(5 / 8 * s) + 1;
+            this.spawnsDash = Math.floor(2 / 8 * s);
             this.spawnsRanged = Math.floor(1 / 8 * s);
             this.spawnTimer = cfg.spawnDelay;
             this.spawnDelay = 0;
         }
 
-        if (this.spawns + this.spawnsRanged > 0) {
+        if (this.spawns + this.spawnsRanged + this.spawnsDash > 0) {
             if (this.spawnDelay > 0) {
                 this.spawnDelay -= Handler.delta;
             } else {
@@ -75,14 +76,17 @@ export class World {
         }
     }
 
-    //TODO: include EnemyDash
     #spawnRandomEnemy() {
         let tries = 100;
         while (--tries > 0) {
             const rng = Math.random();
-            if (this.spawns > 0 && rng < .7) {
+            if (this.spawns > 0 && rng < .5) {
                 if (!this.#spawn(new EnemyMelee(0, 0, 200 + Math.random() * 100))) continue;
                 --this.spawns;
+                tries = 0;
+            } else if (this.spawnsDash > 0 && rng < .8) {
+                if (!this.#spawn(new EnemyDash(0, 0, 150 + Math.random() * 100))) continue;
+                --this.spawnsDash;
                 tries = 0;
             } else if (this.spawnsRanged > 0) {
                 if (!this.#spawn(new EnemyRanged(0, 0, 150 + Math.random() * 50))) continue;
@@ -110,7 +114,7 @@ export class World {
         ctx.save();
         ctx.translate(this.offsetX, this.offsetY);
         ctx.scale(this.scale, this.scale);
-        ctx.fillStyle = 'rgba(25, 25, 30, 1)'
+        ctx.fillStyle = 'rgba(55, 55, 65, 1)'
         ctx.fillRect(0, 0, this.width, this.height);
         this.entities.render(ctx);
         ctx.restore();

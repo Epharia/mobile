@@ -1,5 +1,5 @@
 import { Handler } from "../handler.mjs";
-import { dialogPause } from "../ui/manager.mjs";
+import { dialogPause, dialogTest } from "../ui/manager.mjs";
 import { State } from "./State.mjs";
 
 export class StatePause {
@@ -15,6 +15,7 @@ export class StatePause {
 
     onLeave() {
         dialogPause.hide();
+        dialogTest.show();
     }
 
     render(ctx) {

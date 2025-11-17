@@ -10,7 +10,7 @@ export class AiFollowStop extends AIBase {
         super();
         this.sprite = sprite;
         this.targetDist2 = distance * distance;
-        this.flags = 1;
+        this.flags = 1; //0001
     }
 
     tick() {

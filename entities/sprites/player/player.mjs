@@ -7,6 +7,8 @@ import { Projectile } from "../../projectile.mjs";
 import { Enemy } from "../enemies/enemy.mjs";
 import { Sprite } from "../sprite.mjs";
 
+const color = '#ffffffff';
+
 export class Player extends Sprite {
     constructor(x, y) {
         super(x, y);
@@ -44,7 +46,7 @@ export class Player extends Sprite {
             return;
         }
         const posWeapon = this.pos.copy.addScaled(this.orientation, (this.radius + (this.radius >> 1) + cfg.gap));
-        const projectile = new Projectile(this, this.orientation, cfg.damage, this.speedMax * 2, posWeapon.x, posWeapon.y);
+        const projectile = new Projectile(this, this.orientation, cfg.damage, this.speedMax * 2, posWeapon.x, posWeapon.y, 12);
         Handler.world.entities.add(projectile);
         this.attackDelayTimer = cfg.attackDelay;
     }
@@ -119,14 +121,14 @@ export class Player extends Sprite {
         fillTriangle(ctx,
             this.pos.x + this.orientation.x * (this.radius + (this.radius / 4) + cfg.gap), // X Position around Circle
             this.pos.y + this.orientation.y * (this.radius + (this.radius / 4) + cfg.gap), // Y Position around Circle
-            this.radius, this.radius / 2, this.orientation.angle);
+            this.radius, this.radius / 2, this.orientation.angle, color);
 
         ctx.save();
         if (this.hitAnimTimer > 0) {
             const alpha = .4;
             ctx.globalAlpha = alpha
         }
-        fillCircle(ctx, this.pos.x, this.pos.y, this.radius, 'white');
+        fillCircle(ctx, this.pos.x, this.pos.y, this.radius, color);
         ctx.restore();
     }
 

@@ -1,7 +1,7 @@
 import { header } from "./elements.mjs";
 
 export class Dialog {
-    visible = true;
+    visible = false;
 
     constructor(title = '', ...classList) {
         this.container = globalThis.document.createElement('div');
@@ -11,6 +11,8 @@ export class Dialog {
             const e = header(title);
             this.addElement(e);
         }
+
+        this.hide();
     }
 
     addElement(element) {

@@ -6,8 +6,10 @@ export class AiDash extends AIBase {
     /**
      * @param {Sprite} sprite 
      */
-    constructor(sprite,  delay = 2, variation = 1, animation = 0.5 ,duration = 0.2, multiplier = 10) {
+    constructor(sprite, delay = 2, variation = 1, animation = 0.5, duration = 0.2, multiplier = 10) {
         super();
+        this.flags = 3; //0011
+
         this.sprite = sprite;
         this.animation = animation;
         this.delay = delay;
@@ -48,17 +50,13 @@ export class AiDash extends AIBase {
             this.sprite.speed = 0;
 
             this._animationTimer -= Handler.delta;
-            
-            console.log(this._animationTimer);
         }
-        
+
         else if (this._dashTimer > 0) {
             this._dashTimer -= Handler.delta;
             this.sprite.speed = this._savedSpeed * this.dashMultiplier;
             const boost = this.sprite.speed;
             this.sprite.velocity = this.direction.copy.scale(boost);
-            
-            console.log(this._dashTimer);
         }
     }
 

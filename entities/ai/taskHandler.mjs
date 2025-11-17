@@ -27,6 +27,7 @@ export class TaskHandler {
         const tasks = this.#tasks.filter(e => !e.running && e.action.shouldExecute);
         tasks.sort((a, b) => b.priority - a.priority);
 
+        // Should start task
         for (const t of tasks) {
             const conflicts = this.#executing.filter(e => !t.isCompatibleWith(e));
             if (conflicts.length === 0) {
@@ -41,6 +42,7 @@ export class TaskHandler {
             }
         }
 
+        // Should continue task
         for (const t of this.#executing) {
             if (!t.action.shouldContinue) {
                 this.#end(t);

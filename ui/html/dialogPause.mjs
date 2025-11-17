@@ -7,7 +7,6 @@ export class DialogPause extends Dialog {
         super('Pause', 'pause');
         super.addElement(button("Resume", this.#resume));
         super.addElement(button("Fullscreen", this.#fullscreen));
-        this.hide();
     }
 
     #resume() {

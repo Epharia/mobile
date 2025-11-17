@@ -14,7 +14,7 @@ export class AiShoot extends AIBase {
         this.variation = variation;
         this.cooldown = this.attackDelay;
         this.damage = damage;
-        this.flags = 2;
+        this.flags = 2; //0010
     }
 
     get attackDelay() {

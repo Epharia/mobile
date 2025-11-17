@@ -1,6 +1,5 @@
 import { StatePause } from "./StatePause.mjs";
 import { StateGame } from "./StateGame.mjs";
-import { Handler } from "../handler.mjs";
 import { StateDeath } from "./StateDeath.mjs";
 
 /* TODO Rework
@@ -11,6 +10,7 @@ export class State {
     static game;
     static pause;
     static current;
+    static death;
 
     static init() {
         State.game = new StateGame();
@@ -44,18 +44,5 @@ export class State {
     static frameTimer = 0;
     static render(ctx) {
         State.current.render(ctx);
-
-        //TEMP (FPS output)
-        ++State.frameCtr;
-        State.frameTimer += Handler.delta;
-        if (State.frameTimer >= 1) {
-            State.fps = State.frameCtr;
-            State.frameCtr = 0;
-            State.frameTimer = Handler.delta;
-        }
-
-        ctx.fillStyle = 'white';
-        ctx.font = "20px Arial";
-        ctx.fillText(State.fps, Handler.canvas.width - 35, 25);
     }
 }

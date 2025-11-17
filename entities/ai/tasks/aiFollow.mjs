@@ -12,7 +12,7 @@ export class AiFollow extends AIBase {
         this.range2 = range ? range * range : null;
         if (this.range2) console.log(this.range2)
         this.sprite = sprite;
-        this.flags = 1;
+        this.flags = 1; //0001
     }
 
     tick() {

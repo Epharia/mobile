@@ -13,6 +13,7 @@ export class MouseHandler {
 
     #update = (event) => {
         event.preventDefault();
+        this.isActive = true;
         this.x = event.clientX;
         this.y = event.clientY;
     }

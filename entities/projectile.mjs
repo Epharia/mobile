@@ -8,7 +8,7 @@ export class Projectile extends EntityCollidable {
      * Projectile
      * @param {Entity} origin 
      */
-    constructor(origin, direction = Vector2D.right, damage = 1, speed = 2000, x = origin.pos.x, y = origin.pos.y, radius = 8) {
+    constructor(origin, direction = Vector2D.right, damage = 1, speed = 2000, x = origin.pos.x, y = origin.pos.y, radius = 12) {
         super(x, y, radius);
         this.origin = origin;
         this.direction = direction;
@@ -31,6 +31,6 @@ export class Projectile extends EntityCollidable {
     }
 
     render(ctx) {
-        fillCircle(ctx, this.pos.x, this.pos.y, this.radius, this.fillStyle);
+        fillCircle(ctx, this.pos.x, this.pos.y, this.radius, this.fillStyle, false);
     }
 }

@@ -15,11 +15,11 @@ export class EntityCollectible extends Sprite {
 
 		this.tasks = new TaskHandler();
 
-        this.speed = 600;
-		this.acceleration = 5000;
-		this.tasks.add(new AiFollow(this));
+		this.speed = 600;
+		this.acceleration = 7500;
+		this.tasks.add(new AiFollow(this, 300));
 	}
-    
+
 	static drop(pos, amount = 1) {
 		if (!(pos instanceof Vector2D)) {
 			throw new TypeError('EntityCollectible.drop requires a Vector2D as first argument');
@@ -29,7 +29,7 @@ export class EntityCollectible extends Sprite {
 		const y = pos.y;
 
 		for (let i = 0; i < amount; ++i) {
-			
+
 			const ox = (Math.random() - 0.5) * 32;
 			const oy = (Math.random() - 0.5) * 32;
 			const c = new EntityCollectible(x + ox, y + oy);
@@ -42,13 +42,13 @@ export class EntityCollectible extends Sprite {
 	onCollision(other) {
 		if (other instanceof Player) {
 			++Handler.world.experience;
-            console.log(Handler.world.experience)
-            this.destroy();
+			console.log(Handler.world.experience)
+			this.destroy();
 		}
 	}
 
-    render(ctx) {
-		fillCircle(ctx, this.pos.x, this.pos.y, this.radius, this.color);
+	render(ctx) {
+		fillCircle(ctx, this.pos.x, this.pos.y, this.radius, this.color, false);
 	}
 
 }

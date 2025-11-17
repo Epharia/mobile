@@ -13,9 +13,9 @@ body {
 #ui {
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    width: 100vw;
-    position: relative;
+    height: 100%;
+    width: 100%;
+    position: absolute;
     align-items: center;
     justify-content: center;
 }
@@ -30,7 +30,7 @@ body {
     flex-direction: column;
     justify-content: space-around;
     padding: 8px;
-        gap: 8px;
+    gap: 8px;
 }
 
 .header {

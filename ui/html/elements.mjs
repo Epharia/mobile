@@ -1,3 +1,5 @@
+import { Handler } from "../../handler.mjs";
+
 export function create(e, ...classList) {
     const element = globalThis.document.createElement(`${e}`);
     if (classList.length > 0) element.classList.add(...classList);
@@ -7,7 +9,14 @@ export function create(e, ...classList) {
 export function button(text = "", onClick) {
     const button = create('button');
     button.innerHTML = text;
-    button.addEventListener('click', onClick);
+
+    // Prevents Bug with UI
+    function wrapper() {
+        onClick();
+        Handler.mouse.isActive = false;
+    }
+
+    button.addEventListener('click', wrapper);
     return button;
 }
 

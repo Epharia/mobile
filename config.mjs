@@ -22,8 +22,8 @@ export const player = {
     friction: 5000,
 
     iFrames: 0.25,
-    attackDelay: .7,
-    damage: 2,
+    attackDelay: .5,
+    damage: 1,
 
     collisionBuffer: 4,
 
