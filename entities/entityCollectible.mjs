@@ -5,6 +5,7 @@ import { fillCircle } from "../gfx/gfxLib.mjs";
 import { TaskHandler } from "./ai/taskHandler.mjs";
 import { AiFollow } from "./ai/tasks/aiFollow.mjs";
 import { Vector2D } from "../util/vector2D.mjs";
+import { AiIdle } from "./ai/tasks/aiIdle.mjs";
 
 export class EntityCollectible extends Sprite {
 
@@ -17,7 +18,8 @@ export class EntityCollectible extends Sprite {
 
 		this.speed = 600;
 		this.acceleration = 7500;
-		this.tasks.add(new AiFollow(this, 300));
+		this.tasks.add(new AiFollow(this, 300), 0);
+		this.tasks.add(new AiIdle(this), 1);
 	}
 
 	static drop(pos, amount = 1) {
@@ -41,10 +43,15 @@ export class EntityCollectible extends Sprite {
 
 	onCollision(other) {
 		if (other instanceof Player) {
-			++Handler.world.experience;
-			console.log(Handler.world.experience)
+			++Handler.world.player.experience;
 			this.destroy();
 		}
+	}
+
+	//TODO replace this with specific collectible logic
+	tick() {
+		super.tick();
+		this.tasks.tick();
 	}
 
 	render(ctx) {

@@ -187,7 +187,6 @@ class QuadTree {
      * TEMP (Delete later!)
      */
     render(ctx) {
-        // let alpha = 0.1 + 0.1 * this.level;
         ctx.strokeStyle = "rgb(0, 0, 0)";
         ctx.lineWidth = 5;
         ctx.strokeRect(this.bounds.x, this.bounds.y, this.bounds.w, this.bounds.h);

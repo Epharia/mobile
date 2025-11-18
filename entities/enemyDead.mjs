@@ -4,7 +4,7 @@ import { Entity } from "./entity.mjs";
 
 const animationTime = .2;
 
-//If Animations are added, replace this
+// TODO If Animations are added, replace this
 export class Corpse extends Entity {
     constructor(pos, color, radius = 32) {
         super(pos.x, pos.y);

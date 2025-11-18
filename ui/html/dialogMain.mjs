@@ -2,10 +2,10 @@ import { State } from "../../states/State.mjs";
 import { Dialog } from "./dialog.mjs";
 import { button } from "./elements.mjs";
 
-export class DialogPause extends Dialog {
+export class DialogMain extends Dialog {
     constructor() {
-        super('Pause');
-        super.addElement(button("Resume", this.#resume));
+        super('Circle Suvivor');
+        super.addElement(button("Start Game", this.#resume));
         super.addElement(button("Fullscreen", this.#fullscreen));
     }
 

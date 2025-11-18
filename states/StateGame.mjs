@@ -1,4 +1,3 @@
-import { player } from "../config.mjs";
 import { drawHealth, drawExperience } from "../gfx/gfxLib.mjs";
 import { Handler } from "../handler.mjs";
 import { State } from "./State.mjs";
@@ -28,16 +27,23 @@ export class StateGame {
 
         const scale = window.devicePixelRatio;
 
-        //HP
+        //HUD
         const width = 500 / scale;
         const thickness = 25 / scale;
-        drawHealth(ctx, (canvas.width - width) / 2, 5, width, thickness, Handler.world.player.hp / player.hp);
-        drawExperience(ctx, (canvas.width - width) / 2, thickness + 5, width, thickness, Handler.world.experience / 100);
+        const player = Handler.world.player;
+
+        //HP
+        const hp = player.hp / player.maxHp;
+        drawHealth(ctx, (canvas.width - width) / 2, 5, width, thickness, hp);
+
+        //XP
+        const progress = player.experience / player.nextLevelXP;
+        drawExperience(ctx, (canvas.width - width) / 2, thickness + 5, width, thickness, progress);
 
         //Points
         ctx.fillStyle = 'gray';
         ctx.font = `${20}px Arial`;
-        ctx.fillText(`Kills: ${Handler.world.score}`, 10, 25);
+        ctx.fillText(`Wave: ${Handler.world.wave}`, 10, 25);
 
         //Timer
         ctx.save();

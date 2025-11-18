@@ -6,9 +6,11 @@ export class AiDash extends AIBase {
     /**
      * @param {Sprite} sprite 
      */
-    constructor(sprite, delay = 2, variation = 1, animation = 0.5, duration = 0.2, multiplier = 10) {
+    constructor(sprite, delay = 2, variation = 1, animation = 0.5, duration = 0.2, multiplier = 10, triggerRange = 600) {
         super();
         this.flags = 3; //0011
+
+        this.range2 = triggerRange * triggerRange;
 
         this.sprite = sprite;
         this.animation = animation;
@@ -30,6 +32,7 @@ export class AiDash extends AIBase {
 
     get shouldExecute() {
         if (this.cooldown > 0) { this.cooldown -= Handler.delta; return false; }
+        if (this.#playerVector.magnitude2 > this.range2) { return false; }
         return true;
     }
 

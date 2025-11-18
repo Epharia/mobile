@@ -170,7 +170,7 @@ class Joystick {
         const kx = (k.x / canvas.scrollWidth) * canvas.width;
         const ky = (k.y / canvas.scrollHeight) * canvas.height;
 
-        fillCircle(ctx, pos.x + kx, pos.y + ky, this.radius, 'rgba(164, 164, 164, 0.2)');
-        fillCircle(ctx, pos.x, pos.y, this.maxOffset + this.radius, 'rgba(164, 164, 164, 0.2)');
+        fillCircle(ctx, pos.x + kx, pos.y + ky, this.radius, 'rgba(164, 164, 164, 0.2)', false);
+        fillCircle(ctx, pos.x, pos.y, this.maxOffset + this.radius, 'rgba(164, 164, 164, 0.2)', false);
     }
 }

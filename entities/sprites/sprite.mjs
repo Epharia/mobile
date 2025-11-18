@@ -14,7 +14,6 @@ export class Sprite extends EntityCollidable {
     }
 
     tick() {
-        this.tasks.tick();
         this.normalizeVelocity();
         this.updatePosition();
     }

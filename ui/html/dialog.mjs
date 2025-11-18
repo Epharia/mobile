@@ -19,7 +19,12 @@ export class Dialog {
         this.container.appendChild(element);
     }
 
+    init() {
+
+    }
+
     show() {
+        this.init();
         this.container.style.opacity = 1;
         this.container.style.visibility = 'visible';
         this.visible = true;

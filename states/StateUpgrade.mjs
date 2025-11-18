@@ -1,20 +1,15 @@
 import { Handler } from "../handler.mjs";
-import { dialogPause } from "../ui/manager.mjs";
-import { State } from "./State.mjs";
+import { dialogUpgrade } from "../ui/manager.mjs";
 
-export class StatePause {
-    tick() {
-        if (Handler.keyboard.keys.pause.pressed) {
-            State.requestState(State.game);
-        }
-    }
+export class StateUpgrade {
+    tick() { }
 
     onEnter() {
-        dialogPause.show();
+        dialogUpgrade.show();
     }
 
     onLeave() {
-        dialogPause.hide();
+        dialogUpgrade.hide();
     }
 
     render(ctx) {

@@ -18,6 +18,7 @@ export class Enemy extends Sprite {
 
     tick() {
         super.tick();
+        this.tasks.tick();
         if (this.hitAnimTimer > 0) this.hitAnimTimer -= Handler.delta;
     }
 
@@ -50,8 +51,9 @@ export class Enemy extends Sprite {
     onCollision(other) {
         if (!other.alive) return;
         if (other instanceof Projectile) {
-            if (other.isFriendly) {
+            if (other.isFriendly && !other.ignore.includes(this)) {
                 other.destroy();
+                other.ignore.push(this);
                 this.hurt(other.damage);
             }
         }

@@ -10,7 +10,6 @@ export class AiFollow extends AIBase {
     constructor(sprite, range) {
         super();
         this.range2 = range ? range * range : null;
-        if (this.range2) console.log(this.range2)
         this.sprite = sprite;
         this.flags = 1; //0001
     }

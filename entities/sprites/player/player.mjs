@@ -8,14 +8,29 @@ import { Enemy } from "../enemies/enemy.mjs";
 import { Sprite } from "../sprite.mjs";
 
 const color = '#ffffffff';
+const fontSize = 16;
+const gap = 4;
 
 export class Player extends Sprite {
+
+    upgrades = {
+        attackSpeed: 1,
+        damage: 1,
+        speed: 1,
+        projectileSpeed: 1,
+        piercing: 1,
+    }
+
     constructor(x, y) {
         super(x, y);
 
         this.radius = cfg.radius;
 
+        this.experience = 0;
+        this.level = 1;
+
         this.hp = cfg.hp;
+        this.maxHp = cfg.hp;
         this.speed = cfg.speed;
         this.speedMax = cfg.speed;
         this.acceleration = cfg.acceleration + cfg.friction;
@@ -29,6 +44,9 @@ export class Player extends Sprite {
     }
 
     tick() {
+        while (this.experience >= this.nextLevelXP) {
+            this.#onLevelUp();
+        }
         if (this.hitAnimTimer > 0) this.hitAnimTimer -= Handler.delta;
         if (this.iFramesTimer > 0) this.iFramesTimer -= Handler.delta;
         else this.iFramesTimer = 0;
@@ -40,15 +58,22 @@ export class Player extends Sprite {
         this.attack();
     }
 
+    #onLevelUp() {
+        this.experience -= this.nextLevelXP;
+        this.level++;
+        State.requestState(State.upgrade);
+    }
+
     attack() {
         if (this.attackDelayTimer > 0) {
             this.attackDelayTimer -= Handler.delta;
             return;
         }
         const posWeapon = this.pos.copy.addScaled(this.orientation, (this.radius + (this.radius >> 1) + cfg.gap));
-        const projectile = new Projectile(this, this.orientation, cfg.damage, this.speedMax * 2, posWeapon.x, posWeapon.y, 12);
+        const projectile = new Projectile(this, this.orientation, cfg.damage * this.upgrades.damage, this.speedMax * 2 * this.upgrades.projectileSpeed, posWeapon.x, posWeapon.y, 12, this.upgrades.piercing);
         Handler.world.entities.add(projectile);
-        this.attackDelayTimer = cfg.attackDelay;
+
+        this.attackDelayTimer = cfg.attackDelay / Math.max(this.upgrades.attackSpeed, 1);
     }
 
     #move() {
@@ -66,7 +91,6 @@ export class Player extends Sprite {
                 move = Vector2D.left;
             }
 
-
             //Vertical Input
             const up = Handler.keyboard.keys.up.held,
                 down = Handler.keyboard.keys.down.held;
@@ -80,11 +104,13 @@ export class Player extends Sprite {
             if (this.speed >= this.speedMax) this.speed = this.speedMax;
         }
 
+        this.speed *= this.upgrades.speed;
+
         //Friction
         this.deccelerate(this.friction);
 
         const inputNormal = move.normalize();
-        this.accelerate(inputNormal, this.acceleration);
+        this.accelerate(inputNormal, this.acceleration * this.upgrades.speed);
     }
 
     #aim() {
@@ -132,6 +158,20 @@ export class Player extends Sprite {
         ctx.restore();
     }
 
+    renderUpgrades(ctx) {
+        ctx.save();
+        ctx.font = `${fontSize}px Arial`;
+        ctx.fillStyle = 'white';
+        ctx.fillText(`Level: ${Math.floor(this.level)}`, 10, fontSize + gap);
+        ctx.fillStyle = 'gray';
+        ctx.fillText(`Attack Speed: ${Math.floor(this.upgrades.attackSpeed * 100)}%`, 10, 2 * (fontSize + gap));
+        ctx.fillText(`Damage: ${Math.floor(this.upgrades.damage * 100)}%`, 10, 3 * (fontSize + gap));
+        ctx.fillText(`Movement Speed: ${Math.floor(this.upgrades.speed * 100)}%`, 10, 4 * (fontSize + gap));
+        ctx.fillText(`Projectile Speed: ${Math.floor(this.upgrades.projectileSpeed * 100)}%`, 10, 5 * (fontSize + gap));
+        ctx.fillText(`Piercing: ${Math.floor(this.upgrades.piercing)}`, 10, 6 * (fontSize + gap));
+        ctx.restore();
+    }
+
     #onHit(damage) {
         if (this.iFramesTimer) return;
         this.hp -= damage;
@@ -150,5 +190,9 @@ export class Player extends Sprite {
                 other.destroy();
             }
         }
+    }
+
+    get nextLevelXP() {
+        return Math.floor(this.level * this.level * .7 + 20);
     }
 }
