@@ -52,9 +52,9 @@ export class Enemy extends Sprite {
         if (!other.alive) return;
         if (other instanceof Projectile) {
             if (other.isFriendly && !other.ignore.includes(this)) {
-                other.destroy();
-                other.ignore.push(this);
                 this.hurt(other.damage);
+                other.ignore.push(this);
+                other.destroy();
             }
         }
 
