@@ -1,4 +1,4 @@
-import { AABB } from "../../util/aabb.mjs";
+import { AABB } from "../../util/bounds/aabb.mjs";
 import { Vector2D } from "../../util/vector2D.mjs";
 import { EntityCollidable } from "../entityCollidable.mjs";
 import { EntityManager } from "./entityManager.mjs";

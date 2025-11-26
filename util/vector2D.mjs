@@ -140,6 +140,14 @@ export class Vector2D {
         return this.x == that.x && this.y == that.y;
     }
 
+    /**
+     * @param {Vector2D} v 
+     */
+    set(v) {
+        this.x = v.x;
+        this.y = v.y;
+    }
+
     get angle() {
         return Math.atan2(this.y, this.x);
     }

@@ -63,7 +63,8 @@ export class Enemy extends Sprite {
             const relativeVelocity = this.velocity.copy.sub(other.velocity);
             const penetrationSpeed = normal.copy.dot(relativeVelocity);
             if (penetrationSpeed > 0) return;
-            this.velocity.addScaled(normal, -penetrationSpeed);
+            this.velocity.addScaled(normal, -penetrationSpeed / 2);
+            other.velocity.addScaled(normal, penetrationSpeed / 2);
         }
     }
 }

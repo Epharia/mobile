@@ -5,10 +5,12 @@ export class EntityManager {
     }
 
     tick() {
+        //update all entities
         this.entities.forEach(e => {
             e.tick();
         });
 
+        //remove dead entites
         this.dead.forEach(e => {
             this.remove(e);
         });

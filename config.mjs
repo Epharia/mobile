@@ -25,7 +25,7 @@ export const player = {
     attackDelay: .5,
     damage: 1,
 
-    collisionBuffer: 4,
+    collisionBuffer: 12,
 
     //rendering
     radius: 32,

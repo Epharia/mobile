@@ -100,7 +100,7 @@ export class World {
         const pos = Vector2D.random(this.width / 2 - 100, this.height);
         if (right) pos.add(Vector2D.right.scale(this.width / 2 + 100));
         if (Number.isNaN(pos.x) || Number.isNaN(pos.y)) return false;
-        entity.pos = pos;
+        entity.pos.set(pos);
         this.entities.add(entity);
         return true;
     }

@@ -20,7 +20,8 @@ export class Entity {
 
     /**
      * Marks this entity as dead and
-     * remove it from the entityManager
+     * removes it from the entityManager
+     * at the end of the current tick
      */
     destroy() {
         this.alive = false;

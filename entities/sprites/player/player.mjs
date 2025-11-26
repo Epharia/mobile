@@ -2,6 +2,7 @@ import { player as cfg } from "../../../config.mjs";
 import { fillCircle, fillTriangle } from "../../../gfx/gfxLib.mjs";
 import { Handler } from "../../../handler.mjs";
 import { State } from "../../../states/State.mjs";
+import { Collider } from "../../../util/bounds/collider.mjs";
 import { Vector2D } from "../../../util/vector2D.mjs";
 import { Projectile } from "../../projectile.mjs";
 import { Enemy } from "../enemies/enemy.mjs";
@@ -41,6 +42,7 @@ export class Player extends Sprite {
         this.attackDelayTimer = cfg.attackDelay;
 
         this.orientation = Vector2D.right;
+        this.collider = new Collider(this.pos, this.radius - cfg.collisionBuffer);
     }
 
     tick() {
@@ -158,6 +160,11 @@ export class Player extends Sprite {
         ctx.restore();
     }
 
+    /**
+     * @deprecated
+     * @param {CanvasRenderingContext2D} ctx 
+     * this is only a temporary solution
+     */
     renderUpgrades(ctx) {
         ctx.save();
         ctx.font = `${fontSize}px Arial`;

@@ -1,4 +1,4 @@
-import { Vector2D } from "./vector2D.mjs";
+import { Vector2D } from "../vector2D.mjs";
 
 export class AABB {
     constructor(origin = new Vector2D(), dimensions = new Vector2D(64)) {
