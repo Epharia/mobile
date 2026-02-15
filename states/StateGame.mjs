@@ -34,11 +34,11 @@ export class StateGame {
 
         //HP
         const hp = player.hp / player.maxHp;
-        drawHealth(ctx, (canvas.width - width) / 2, 5, width, thickness, hp);
+        drawHealth(ctx, (Handler.canvas.width - width) / 2, 5, width, thickness, hp);
 
         //XP
         const progress = player.experience / player.nextLevelXP;
-        drawExperience(ctx, (canvas.width - width) / 2, thickness + 5, width, thickness, progress);
+        drawExperience(ctx, (Handler.canvas.width - width) / 2, thickness + 5, width, thickness, progress);
 
         //Points
         ctx.fillStyle = 'gray';

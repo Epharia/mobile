@@ -35,9 +35,10 @@ globalThis.addEventListener('load', async function () {
 });
 
 function resize() {
-    canvas.width = globalThis.innerWidth;
-    canvas.height = globalThis.innerHeight;
-    Handler.world.calculateScale();
+    if (!Handler.canvas) return;
+    Handler.canvas.width = globalThis.innerWidth;
+    Handler.canvas.height = globalThis.innerHeight;
+    Handler.world?.calculateScale();
 }
 globalThis.addEventListener('resize', resize);
 globalThis.addEventListener('orientationchange', resize);

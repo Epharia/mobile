@@ -21,8 +21,8 @@ export class StateDeath {
         ctx.textAlign = "center";
         ctx.shadowColor = 'rgba(255, 0, 0, 0.6)';
         ctx.shadowBlur = 16;
-        ctx.fillText('You Died!', canvas.width / 2, canvas.height / 2 - 20);
-        ctx.fillText(`Respawn in ${Math.ceil(StateDeath.timer)}`, canvas.width / 2, canvas.height / 2 + 20);
+        ctx.fillText('You Died!', Handler.canvas.width / 2, Handler.canvas.height / 2 - 20);
+        ctx.fillText(`Respawn in ${Math.ceil(StateDeath.timer)}`, Handler.canvas.width / 2, Handler.canvas.height / 2 + 20);
         ctx.restore();
     }
 }

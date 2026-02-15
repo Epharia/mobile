@@ -17,7 +17,7 @@ export class StateUpgrade {
 
         ctx.save();
         ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, Handler.canvas.width, Handler.canvas.height);
         ctx.restore();
 
         Handler.world.player.renderUpgrades(ctx);

@@ -1,6 +1,7 @@
 import { KeyboardHandler } from './input/keyboard.mjs';
 import { MouseHandler } from './input/mouse.mjs';
 import { TouchHandler } from './input/touch.mjs';
+import { World } from './world/world.mjs';
 
 export class Handler {
     /** @type {Number} */
@@ -30,10 +31,6 @@ export class Handler {
         Handler.keyboard = new KeyboardHandler();
         Handler.mouse = new MouseHandler();
         Handler.touch = new TouchHandler();
-
-        //TODO find a better Solution, Rework handler?
-        //avoid circular Imports
-        const { World } = await import('./world/world.mjs');
         Handler.world = new World();
         Handler.world.init();
     }
