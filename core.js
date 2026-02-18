@@ -1,44 +1,29 @@
-import { Handler } from './handler.mjs';
-import { State } from './states/State.mjs';
-import { initHTMLDialogs } from './ui/manager.mjs';
+import { Engine } from './engine/engine.mjs';
+import { Scene } from './systems/Scene.mjs';
 
 globalThis.addEventListener('load', async function () {
     const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
+    const engine = new Engine(canvas);
+    await engine.init();
 
-    canvas.width = globalThis.innerWidth;
-    canvas.height = globalThis.innerHeight;
-
-    initHTMLDialogs();
-
-    State.init();
-    await Handler.init(canvas);
-
-    let lastTime = 0;
-    function loop(time) {
-        Handler.delta = (time - lastTime) / 1000;
-        Handler.delta = Math.min(Handler.delta, 0.1);
-        lastTime = time;
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        State.tick();
-        State.render(ctx);
-
-        State.update();
-
-        ctx.resetTransform();
-
-        requestAnimationFrame(loop);
-    }
-    this.requestAnimationFrame(loop);
+    engine.start();
 });
 
 function resize() {
-    if (!Handler.canvas) return;
-    Handler.canvas.width = globalThis.innerWidth;
-    Handler.canvas.height = globalThis.innerHeight;
-    Handler.world?.calculateScale();
+    if (!engine) return;
+    
+    const newWidth = globalThis.innerWidth;
+    const newHeight = globalThis.innerHeight;
+    
+    engine.setCanvasSize(newWidth, newHeight);
+    engine.events.emit('engine:resize', { width: newWidth, height: newHeight });
 }
+
 globalThis.addEventListener('resize', resize);
 globalThis.addEventListener('orientationchange', resize);
+
+globalThis.addEventListener('beforeunload', () => {
+    if (engine) {
+        engine.shutdown();
+    }
+});
