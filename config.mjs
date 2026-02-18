@@ -1,6 +1,6 @@
 //TODO refactor configs
 export const Config = {
-    colors: COLORS,
+    // colors: COLORS,
     settings: {},
 };
 

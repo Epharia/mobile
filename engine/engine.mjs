@@ -1,10 +1,10 @@
-import { EventSystem } from '../systems/EventSystem.mjs';
-import { SceneManager } from '../systems/Scene.mjs';
-import { Renderer } from '../systems/Renderer.mjs';
+import { EventSystem } from '../systems/event.mjs';
+import { SceneManager } from '../systems/scene.mjs';
+import { Renderer } from '../systems/renderer.mjs';
 import { ResourceManager } from '../systems/ResourceManager.mjs';
-import { AnimationSystem } from '../systems/Animation.mjs';
-import { SoundSystem } from '../systems/SoundSystem.mjs';
-import { InputSystem } from '../input/inputSystem.mjs';
+import { AnimationSystem } from '../systems/animation.mjs';
+import { SoundSystem } from '../systems/sound.mjs';
+import { InputSystem } from '../systems/input.mjs';
 
 /**
  * Game engine orchestrating all systems
@@ -59,6 +59,7 @@ export class Engine {
      */
     async init() {
         console.log('Initializing Engine...');
+        this.setCanvasSize(globalThis.innerWidth, globalThis.innerHeight);
 
         // Wait for any initial resource loading
         await this.resources.waitForLoading();
