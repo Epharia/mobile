@@ -1,3 +1,10 @@
+//TODO refactor configs
+export const Config = {
+    colors: COLORS,
+    settings: {},
+};
+
+
 //Keybinds
 export const binds = {
     pause: ["Escape", "KeyP"],
