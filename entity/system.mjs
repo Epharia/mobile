@@ -1,34 +1,54 @@
-import { EntityManager } from './entityManager.mjs';
-
 /**
  * System - Base class for systems that process entities with specific components
- * //TODO improve
- * - cache entites? pooling?
- * - component list to fetch only needed entities
  */
 export class System {
-    /** @type {EntityManager} Reference to the entity manager */
-    entityManager; //TODO remove once the rest is done
-
     /** @type {boolean} Whether this system is enabled */
     enabled = true;
 
     /** @type {number} Update priority (lower = earlier execution) */
     priority = 0;
 
+    /** @type {import('../engine/services.mjs').ServiceContainer | null} */
+    services = null;
+
+    /** @type {import('./query.mjs').Query[]} Queries created by this system (for cleanup) */
+    #queries = [];
+
     /**
      * Create a new system
-     * @param {EntityManager} entityManager
      */
-    constructor(entityManager) {
-        this.entityManager = entityManager;
+    constructor() {
+
+    }
+
+    /**
+     * Setup queries for this system
+     * Called by SystemManager when system is added
+     * Override this to create queries
+     * @param {import('./entityManager.mjs').EntityManager} entityManager
+     */
+    setupQueries(entityManager) {
+        // Override in child classes to create queries
+    }
+
+    /**
+     * Track a query for automatic cleanup
+     * @param {import('./query.mjs').Query} query
+     * @returns {import('./query.mjs').Query}
+     */
+    trackQuery(query) {
+        this.#queries.push(query);
+        return query;
     }
 
     /**
      * Initialize the system
-     * Called once when the system is added
+     * Called once when the system is added, after setupQueries
+     * @param {import('../engine/services.mjs').ServiceContainer} services
      */
-    init() { }
+    init(services) {
+        this.services = services;
+    }
 
     /**
      * Update the system
@@ -39,6 +59,13 @@ export class System {
     /**
      * Cleanup the system
      * Called when the system is removed
+     * Automatically destroys all tracked queries
      */
-    cleanup() { }
+    cleanup() {
+        // Cleanup all queries
+        for (const query of this.#queries) {
+            query.destroy();
+        }
+        this.#queries = [];
+    }
 }

@@ -1,5 +1,5 @@
 import { Component } from './component.mjs';
-
+import { EventTypes } from '../engine/services/event.mjs';
 /**
  * Entity - Container for components following the Entity Component System pattern
  */
@@ -16,6 +16,9 @@ export class Entity {
     /** @type {Map<Function, Component>} Components attached to this entity */
     #components = new Map();
 
+    /** @type {import('../engine/services/event.mjs').EventService | null} */
+    #eventSystem = null;
+
     /** @type {number} Static counter for generating unique IDs */
     static #nextId = 1;
 
@@ -26,6 +29,13 @@ export class Entity {
     constructor(name = '') {
         this.id = Entity.#nextId++;
         this.name = name;
+    }
+
+    /**
+     * @param {import('../engine/services/event.mjs').EventService | null} eventSystem
+     */
+    setEventSystem(eventSystem) {
+        this.#eventSystem = eventSystem;
     }
 
     /**
@@ -50,6 +60,15 @@ export class Entity {
         this.#components.set(ComponentClass, component);
         component.onAdd();
 
+        // Emit event
+        if (this.#eventSystem) {
+            this.#eventSystem.emit(EventTypes.COMPONENT_ADDED, {
+                entity: this,
+                component,
+                componentClass: ComponentClass
+            });
+        }
+
         return component;
     }
 
@@ -68,6 +87,15 @@ export class Entity {
         component.onRemove();
         component.entity = null;
         this.#components.delete(ComponentClass);
+
+        // Emit event
+        if (this.#eventSystem) {
+            this.#eventSystem.emit(EventTypes.COMPONENT_REMOVED, {
+                entity: this,
+                component,
+                componentClass: ComponentClass
+            });
+        }
 
         return true;
     }

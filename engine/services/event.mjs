@@ -1,7 +1,7 @@
 /**
- * EventSystem - //TODO description here
+ * EventService - //TODO description here
  */
-export class EventSystem {
+export class EventService {
     #listeners = new Map();
 
     /**
@@ -64,8 +64,16 @@ export class EventSystem {
 
 //TODO Predefined event types
 export const EventTypes = {
-    // example events
+    // Wave/Game events
     WAVE_STARTED: 'wave:started',
     WAVE_COMPLETED: 'wave:completed',
     WAVE_FAILED: 'wave:failed',
+
+    // ECS Entity events
+    ENTITY_ADDED: 'ecs:entity:added',
+    ENTITY_REMOVED: 'ecs:entity:removed',
+
+    // ECS Component events
+    COMPONENT_ADDED: 'ecs:component:added',
+    COMPONENT_REMOVED: 'ecs:component:removed',
 };

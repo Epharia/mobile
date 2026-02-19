@@ -1,5 +1,6 @@
 import { Entity } from './entity.mjs';
 import { Component } from './component.mjs';
+import { EventTypes } from '../engine/services/event.mjs';
 
 /**
  * EntityManager - Manages all entities in the game
@@ -10,6 +11,23 @@ export class EntityManager {
 
     /** @type {Map<string, Entity[]>} Entities grouped by name/tag */
     #entitiesByName = new Map();
+
+    /** @type {import('../engine/services.mjs').ServiceContainer | null} Service registry */
+    services = null;
+
+    /** @type {import('../engine/services/event.mjs').EventService | null} Event system */
+    eventSystem = null;
+
+    /**
+     * Create a new entity manager
+     * @param {import('../engine/services.mjs').ServiceContainer | null} services
+     */
+    constructor(services = null) {
+        this.services = services;
+        if (this.services && this.services.has('events')) {
+            this.eventSystem = this.services.get('events');
+        }
+    }
 
     /**
      * Create a new entity and add it to the manager
@@ -28,6 +46,8 @@ export class EntityManager {
      * @returns {Entity}
      */
     addEntity(entity) {
+        entity.setEventSystem(this.eventSystem);
+
         this.#entities.set(entity.id, entity);
 
         if (entity.name) {
@@ -35,6 +55,10 @@ export class EntityManager {
                 this.#entitiesByName.set(entity.name, []);
             }
             this.#entitiesByName.get(entity.name).push(entity);
+        }
+
+        if (this.eventSystem) {
+            this.eventSystem.emit(EventTypes.ENTITY_ADDED, { entity });
         }
 
         return entity;
@@ -69,6 +93,10 @@ export class EntityManager {
 
         ent.destroy();
         this.#entities.delete(id);
+
+        if (this.eventSystem) {
+            this.eventSystem.emit(EventTypes.ENTITY_REMOVED, { entity: ent });
+        }
 
         return true;
     }

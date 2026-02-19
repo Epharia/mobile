@@ -8,6 +8,9 @@ export class SystemManager {
     /** @type {EntityManager} Reference to the entity manager */
     entityManager;
 
+    /** @type {import('../engine/services.mjs').ServiceContainer} Service registry */
+    services;
+
     /** @type {System[]} All registered systems */
     #systems = [];
 
@@ -18,9 +21,11 @@ export class SystemManager {
     /**
      * Create a new system manager
      * @param {EntityManager} entityManager
+     * @param {import('../engine/services.mjs').ServiceContainer} services
      */
-    constructor(entityManager) {
+    constructor(entityManager, services) {
         this.entityManager = entityManager;
+        this.services = services;
     }
 
     /**
@@ -41,18 +46,15 @@ export class SystemManager {
             return this.#systemsByClass.get(SystemClass);
         }
 
-        // Set entity manager reference if not already set
-        // TODO works for now (once the rest of the refactor was done revisit this)
-        if (!system.entityManager) {
-            system.entityManager = this.entityManager;
-        }
-
         this.#systems.push(system);
         this.#systemsByClass.set(SystemClass, system);
 
         // Sort by priority (lower = earlier)
         this.#systems.sort((a, b) => a.priority - b.priority);
-        system.init();
+
+        system.setupQueries(this.entityManager);
+        system.services = this.services;
+        system.init(this.services);
 
         return system;
     }

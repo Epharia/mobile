@@ -1,13 +1,22 @@
 import { System } from "../system.mjs";
+import { Query } from "../query.mjs";
 import { TransformComponent } from "../components/transformComponent.mjs";
 
+//TODO implement correctly
 export class MovementSystem extends System {
-    update(deltaTime) {
-        const entities = this.entityManager.getEntitiesWithComponent(TransformComponent);
+    /** @type {Query} Query for movable entities */
+    #movables;
 
-        for (const entity of entities) {
+    setupQueries(entityManager) {
+        this.#movables = this.trackQuery(
+            new Query(entityManager, TransformComponent)
+        );
+    }
+
+    update(deltaTime) {
+        for (const entity of this.#movables.execute()) {
             const transform = entity.getComponent(TransformComponent);
-            transform.translate(1, 0);
+            transform.translate(50 * deltaTime, 0);
         }
     }
 }

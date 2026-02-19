@@ -1,12 +1,14 @@
-import { EventSystem } from '../systems/event.mjs';
-import { SceneManager } from '../systems/scene.mjs';
-import { Renderer } from '../systems/renderer.mjs';
-import { ResourceManager } from '../systems/ResourceManager.mjs';
-import { AnimationSystem } from '../systems/animation.mjs';
-import { SoundSystem } from '../systems/sound.mjs';
-import { InputSystem } from '../systems/input.mjs';
+import { EventService } from './services/event.mjs';
+import { SceneManager } from './services/scene.mjs';
+import { Renderer } from './services/renderer.mjs';
+import { ResourceManager } from './services/resourceManager.mjs';
+import { AnimationService } from './services/animation.mjs';
+import { SoundService } from './services/sound.mjs';
+import { InputService } from './services/input.mjs';
 import { EntityManager } from '../entity/entityManager.mjs';
 import { SystemManager } from '../entity/systemManager.mjs';
+import { RenderSystem } from '../entity/systems/renderSystem.mjs';
+import { ServiceContainer } from './services.mjs';
 
 /**
  * Game engine orchestrating all systems
@@ -15,7 +17,7 @@ export class Engine {
     /** @type {Renderer} */ //TODO implement
     renderer;
 
-    /** @type {EventSystem} */ //TODO implement
+    /** @type {EventService} */ //TODO implement
     events;
 
     /** @type {SceneManager} */ //TODO implement
@@ -24,13 +26,13 @@ export class Engine {
     /** @type {ResourceManager} */ //TODO implement
     resources;
 
-    /** @type {AnimationSystem} */ //TODO implement
+    /** @type {AnimationService} */ //TODO implement
     animations;
 
-    /** @type {SoundSystem} */ //TODO implement
+    /** @type {SoundService} */ //TODO implement
     sound;
 
-    /** @type {InputSystem} */ //TODO implement
+    /** @type {InputService} */ //TODO implement
     input;
 
     /** @type {EntityManager} ECS entity manager */
@@ -38,6 +40,9 @@ export class Engine {
 
     /** @type {SystemManager} ECS system manager */
     systems;
+
+    /** @type {ServiceContainer} Service registry */
+    services;
 
     /** @type {number} Delta time from last frame */
     deltaTime = 0;
@@ -53,17 +58,25 @@ export class Engine {
 
     constructor(canvas) {
         this.renderer = new Renderer(canvas);
-        this.events = new EventSystem();
+        this.events = new EventService();
         this.sceneManager = new SceneManager();
         this.resources = new ResourceManager();
-        this.animations = new AnimationSystem();
-        this.sound = new SoundSystem();
-        this.input = new InputSystem(this.events);
+        this.animations = new AnimationService();
+        this.sound = new SoundService();
+        this.input = new InputService(this.events);
+
+        this.services = new ServiceContainer();
+        this.services.register('renderer', this.renderer);
+        this.services.register('events', this.events);
+        this.services.register('resources', this.resources);
+        this.services.register('animations', this.animations);
+        this.services.register('sound', this.sound);
+        this.services.register('input', this.input);
 
         // ECS setup
         // TODO Move entityManager to Scences once implemented 
-        this.entities = new EntityManager();
-        this.systems = new SystemManager(this.entities);
+        this.entities = new EntityManager(this.services);
+        this.systems = new SystemManager(this.entities, this.services);
     }
 
     /**
@@ -138,7 +151,14 @@ export class Engine {
      * Render via Renderer
      */
     #render() {
+        // Clear canvas
+        this.renderer.clear('#000000');
 
+        // Render all entities via RenderSystem
+        const renderSystem = this.systems.getSystem(RenderSystem);
+        if (renderSystem) {
+            renderSystem.render();
+        }
     }
 
     /**

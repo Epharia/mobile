@@ -2,7 +2,7 @@
  * Animation - //TODO add description
  */
 export class Animation {
-    
+
 }
 
 /**
@@ -14,8 +14,8 @@ export class AnimationPlayer {
 }
 
 /**
- * AnimationSystem - //TODO add description
+ * AnimationService - //TODO add description
  */
-export class AnimationSystem {
-   
+export class AnimationService {
+
 }
