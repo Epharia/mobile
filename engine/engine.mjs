@@ -5,6 +5,8 @@ import { ResourceManager } from '../systems/ResourceManager.mjs';
 import { AnimationSystem } from '../systems/animation.mjs';
 import { SoundSystem } from '../systems/sound.mjs';
 import { InputSystem } from '../systems/input.mjs';
+import { EntityManager } from '../entity/entityManager.mjs';
+import { SystemManager } from '../entity/systemManager.mjs';
 
 /**
  * Game engine orchestrating all systems
@@ -31,6 +33,12 @@ export class Engine {
     /** @type {InputSystem} */ //TODO implement
     input;
 
+    /** @type {EntityManager} ECS entity manager */
+    entities;
+
+    /** @type {SystemManager} ECS system manager */
+    systems;
+
     /** @type {number} Delta time from last frame */
     deltaTime = 0;
 
@@ -51,6 +59,11 @@ export class Engine {
         this.animations = new AnimationSystem();
         this.sound = new SoundSystem();
         this.input = new InputSystem(this.events);
+
+        // ECS setup
+        // TODO Move entityManager to Scences once implemented 
+        this.entities = new EntityManager();
+        this.systems = new SystemManager(this.entities);
     }
 
     /**
@@ -116,14 +129,16 @@ export class Engine {
      * Update all systems
      */
     #update() {
-
+        // TODO temp testing
+        this.entities.update(this.deltaTime);
+        this.systems.update(this.deltaTime);
     }
 
     /**
      * Render via Renderer
      */
     #render() {
-        
+
     }
 
     /**
@@ -148,6 +163,8 @@ export class Engine {
      */
     shutdown() {
         this.stop();
+        this.systems.clear();
+        this.entities.clear(); //TODO move
         this.sceneManager.clear();
         this.resources.clear();
         this.animations.clear();

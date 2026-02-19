@@ -1,9 +1,17 @@
 import { Engine } from './engine/engine.mjs';
+import { TransformComponent } from './entity/components/transformComponent.mjs';
+import { MovementSystem } from './entity/systems/movementSystem.mjs';
 
 globalThis.addEventListener('load', async function () {
     const canvas = document.getElementById('canvas');
     const engine = new Engine(canvas);
     await engine.init();
+
+    //TODO REMOVE THIS TEST
+    engine.systems.addSystem(new MovementSystem(engine.entities));
+    const test = engine.entities.createEntity('test');
+    test.addComponent(new TransformComponent(0, 100));
+    //TEST END
 
     engine.start();
 });
