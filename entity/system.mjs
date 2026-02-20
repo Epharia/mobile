@@ -1,3 +1,5 @@
+import { SERVICE_KEYS } from '../engine/services.mjs';
+
 /**
  * System - Base class for systems that process entities with specific components
  */
@@ -48,6 +50,46 @@ export class System {
      */
     init(services) {
         this.services = services;
+    }
+
+    /**
+     * Get a service from the container
+     * @param {string} serviceKey
+     * @returns {any}
+     */
+    getService(serviceKey) {
+        if (!this.services) {
+            throw new Error('System has no ServiceContainer assigned');
+        }
+
+        return this.services.get(serviceKey);
+    }
+
+    /**
+     * Try to get a service from the container
+     * @param {string} serviceKey
+     * @returns {any | null}
+     */
+    tryGetService(serviceKey) {
+        if (!this.services) {
+            return null;
+        }
+
+        return this.services.tryGet(serviceKey);
+    }
+
+    /**
+     * Check if a service is available
+     * @param {string} serviceKey
+     * @returns {boolean}
+     */
+    hasService(serviceKey) {
+        return !!this.services && this.services.has(serviceKey);
+    }
+
+    /** @returns {import('../engine/services/event.mjs').EventService} */
+    get events() {
+        return this.getService(SERVICE_KEYS.EVENTS);
     }
 
     /**

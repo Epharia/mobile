@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import { EventService, EventTypes } from '../engine/services/event.mjs';
-import { ServiceContainer } from '../engine/services.mjs';
+import { ServiceContainer, SERVICE_KEYS } from '../engine/services.mjs';
 import { EntityManager } from '../entity/entityManager.mjs';
 import { Component } from '../entity/component.mjs';
 import { Query } from '../entity/query.mjs';
@@ -14,9 +14,19 @@ class DummyComponent extends Component { }
 function createServices() {
     const services = new ServiceContainer();
     const events = new EventService();
-    services.register('events', events);
+    services.register(SERVICE_KEYS.EVENTS, events);
     return { services, events };
 }
+
+test('ServiceContainer prevents duplicate registration by default', () => {
+    const services = new ServiceContainer();
+    services.register(SERVICE_KEYS.EVENTS, new EventService());
+
+    assert.throws(
+        () => services.register(SERVICE_KEYS.EVENTS, new EventService()),
+        /already registered/
+    );
+});
 
 function runQueryInvalidationScenario({
     name,
@@ -126,5 +136,5 @@ test('SystemManager passes services to systems on init', () => {
 
     assert.ok(sys.initCalled, 'Expected init to be called');
     assert.ok(sys.services, 'Expected services to be set on system');
-    assert.ok(sys.services.has('events'));
+    assert.ok(sys.services.has(SERVICE_KEYS.EVENTS));
 });

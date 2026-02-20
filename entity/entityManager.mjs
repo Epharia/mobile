@@ -1,6 +1,7 @@
 import { Entity } from './entity.mjs';
 import { Component } from './component.mjs';
 import { EventTypes } from '../engine/services/event.mjs';
+import { SERVICE_KEYS } from '../engine/services.mjs';
 
 /**
  * EntityManager - Manages all entities in the game
@@ -24,8 +25,8 @@ export class EntityManager {
      */
     constructor(services = null) {
         this.services = services;
-        if (this.services && this.services.has('events')) {
-            this.eventSystem = this.services.get('events');
+        if (this.services && this.services.has(SERVICE_KEYS.EVENTS)) {
+            this.eventSystem = this.services.get(SERVICE_KEYS.EVENTS);
         }
     }
 

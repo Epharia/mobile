@@ -8,7 +8,7 @@ import { InputService } from './services/input.mjs';
 import { EntityManager } from '../entity/entityManager.mjs';
 import { SystemManager } from '../entity/systemManager.mjs';
 import { RenderSystem } from '../entity/systems/renderSystem.mjs';
-import { ServiceContainer } from './services.mjs';
+import { ServiceContainer, SERVICE_KEYS } from './services.mjs';
 
 /**
  * Game engine orchestrating all systems
@@ -66,12 +66,13 @@ export class Engine {
         this.input = new InputService(this.events);
 
         this.services = new ServiceContainer();
-        this.services.register('renderer', this.renderer);
-        this.services.register('events', this.events);
-        this.services.register('resources', this.resources);
-        this.services.register('animations', this.animations);
-        this.services.register('sound', this.sound);
-        this.services.register('input', this.input);
+        this.services.register(SERVICE_KEYS.RENDERER, this.renderer);
+        this.services.register(SERVICE_KEYS.EVENTS, this.events);
+        this.services.register(SERVICE_KEYS.SCENE_MANAGER, this.sceneManager);
+        this.services.register(SERVICE_KEYS.RESOURCES, this.resources);
+        this.services.register(SERVICE_KEYS.ANIMATIONS, this.animations);
+        this.services.register(SERVICE_KEYS.SOUND, this.sound);
+        this.services.register(SERVICE_KEYS.INPUT, this.input);
 
         // ECS setup
         // TODO Move entityManager to Scences once implemented 

@@ -2,6 +2,7 @@ import { System } from '../system.mjs';
 import { Query } from '../query.mjs';
 import { TransformComponent } from '../components/transformComponent.mjs';
 import { ShapeComponent } from '../components/shapeComponent.mjs';
+import { SERVICE_KEYS } from '../../engine/services.mjs';
 
 /**
  * RenderSystem - describe
@@ -21,8 +22,8 @@ export class RenderSystem extends System {
     }
 
     init(services) {
-        this.priority = 100;
-        this.renderer = services.get('renderer');
+        super.init(services);
+        this.renderer = this.getService(SERVICE_KEYS.RENDERER);
     }
 
     render() {

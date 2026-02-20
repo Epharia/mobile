@@ -11,6 +11,16 @@ export class EventService {
      * @returns {Function} Unsubscribe function
      */
     subscribe(eventType, callback) {
+        return this.on(eventType, callback);
+    }
+
+    /**
+     * Register a listener for an event type
+     * @param {string} eventType
+     * @param {Function} callback
+     * @returns {Function} Unsubscribe function
+     */
+    on(eventType, callback) {
         if (!this.#listeners.has(eventType)) {
             this.#listeners.set(eventType, []);
         }
@@ -19,12 +29,54 @@ export class EventService {
 
         // Return unsubscribe function
         return () => {
-            const listeners = this.#listeners.get(eventType);
-            const index = listeners.indexOf(callback);
-            if (index > -1) {
-                listeners.splice(index, 1);
-            }
+            this.off(eventType, callback);
         };
+    }
+
+    /**
+     * Register a listener that runs once
+     * @param {string} eventType
+     * @param {Function} callback
+     * @returns {Function} Unsubscribe function
+     */
+    once(eventType, callback) {
+        let unsubscribe = null;
+
+        const wrappedCallback = (data) => {
+            if (unsubscribe) {
+                unsubscribe();
+            }
+            callback(data);
+        };
+
+        unsubscribe = this.on(eventType, wrappedCallback);
+        return unsubscribe;
+    }
+
+    /**
+     * Remove a single listener for an event type
+     * @param {string} eventType
+     * @param {Function} callback
+     * @returns {boolean}
+     */
+    off(eventType, callback) {
+        const listeners = this.#listeners.get(eventType);
+        if (!listeners) {
+            return false;
+        }
+
+        const index = listeners.indexOf(callback);
+        if (index === -1) {
+            return false;
+        }
+
+        listeners.splice(index, 1);
+
+        if (listeners.length === 0) {
+            this.#listeners.delete(eventType);
+        }
+
+        return true;
     }
 
     /**
@@ -50,7 +102,11 @@ export class EventService {
         const listeners = this.#listeners.get(eventType);
         // Copy array in case listeners unsubscribe during iteration
         for (const listener of [...listeners]) {
-            listener(data);
+            try {
+                listener(data);
+            } catch (error) {
+                console.error(`Error while handling event \"${eventType}\":`, error);
+            }
         }
     }
 
